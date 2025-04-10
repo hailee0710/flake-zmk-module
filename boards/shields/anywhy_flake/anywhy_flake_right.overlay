@@ -16,7 +16,7 @@
     compatible = "zmk,kscan-gpio-matrix";
     wakeup-source;
 
-    col-gpio
+    col-gpios
         = <&gpio0 9 14 GPIO_ACTIVE_HIGH>
         , <&gpio0 10 GPIO_ACTIVE_HIGH>
         , <&gpio1 11 GPIO_ACTIVE_HIGH>
@@ -25,7 +25,7 @@
         , <&gpio0 17 GPIO_ACTIVE_HIGH>
         ;
 
-    row-gpio
+    row-gpios
         = <&gpio0 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
         , <&gpio0 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
         , <&gpio1 4  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
