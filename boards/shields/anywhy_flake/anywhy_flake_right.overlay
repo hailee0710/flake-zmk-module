@@ -13,6 +13,9 @@
 };
 
 &kscan0 {
+    compatible = "zmk,kscan-gpio-matrix";
+    wakeup-source;
+
     col-gpio
         = <&gpio0 9 14 GPIO_ACTIVE_HIGH>
         , <&gpio0 10 GPIO_ACTIVE_HIGH>
@@ -30,3 +33,7 @@
         , <&gpio0 31  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
         ;
 };
+
+&large_layout {
+    kscan = <&kscan0>;
+}

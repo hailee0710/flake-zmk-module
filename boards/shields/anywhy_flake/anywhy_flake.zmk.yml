@@ -4,9 +4,10 @@ name: Anywhy Flake
 type: shield
 url: https://github.com/anywhy-io/flake
 requires: [pro_micro]
+exposes: [i2c_oled]
 features:
   - keys
   - studio
 siblings:
-  - anywhy_flake_left
-  - anywhy_flake_right
+  - asterisk_left
+  - asterisk_right

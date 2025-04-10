@@ -19,7 +19,7 @@
 ---
 include:
   - board: nice_nano_v2
-    shield: anywhy_flake_central dongle_display_091_oled
+    shield: anywhy_flake_dongle dongle_display_091_oled
     snippet: studio-rpc-usb-uart
   - board: nice_nano_v2
     shield: anywhy_flake_left
