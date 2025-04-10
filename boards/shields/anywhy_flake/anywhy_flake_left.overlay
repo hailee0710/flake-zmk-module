@@ -24,4 +24,4 @@
 
 &large_layout {
     kscan = <&kscan0>;
-}
+};
