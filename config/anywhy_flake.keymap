@@ -10,6 +10,8 @@
             #binding-cells = <0>;
             bindings = <&kp P &kp H &kp I &kp M &kp M &kp E &kp O &kp M &kp E &kp O &kp DOT &kp C &kp O &kp M>;
             label = "MK";
+            wait-ms = <1>;
+            tap-ms = <1>;
         };
     };
 
