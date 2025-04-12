@@ -32,7 +32,7 @@
 &none      &none   &none   &none              &none            &kp F12    &none   &none     &kp UP        &none      &none            &kp RIGHT_BRACKET
 &none      &none   &none   &kp C_VOLUME_DOWN  &kp C_VOLUME_UP  &none      &none   &kp LEFT  &kp DOWN      &kp RIGHT  &none            &none
 &none      &none   &none   &none              &none            &none      &none   &none     &none         &none      &none            &none
-           &trans  &trans  &trans             &trans           &none      &none   &trans    &kp C_VOL_DN  &trans     &kp C_VOLUME_UP
+           &trans  &trans  &trans             &trans           &mk        &none   &trans    &kp C_VOL_DN  &trans     &kp C_VOLUME_UP
             >;
         };
     };
