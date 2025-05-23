@@ -25,3 +25,8 @@
 &large_layout {
     kscan = <&kscan0>;
 };
+
+// Enable the trackpoint listener for the central left.
+&tpoint_listener {
+    status = "okay";
+};
