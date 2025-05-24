@@ -41,8 +41,8 @@
 
 // But on the yk_do52pro keyboard the trackpoint is connected to 16 and 15 
 // in my I swapped clock and data to be compatible with rp2040 pioj
-#define MOUSE_PS2_PIN_SCL_PRO_MICRO <&pro_micro 16 GPIO_ACTIVE_HIGH>
-#define MOUSE_PS2_PIN_SDA_PRO_MICRO <&pro_micro 15 GPIO_ACTIVE_HIGH>
+#define MOUSE_PS2_PIN_SCL_PRO_MICRO <&pro_micro 4 GPIO_ACTIVE_HIGH>
+#define MOUSE_PS2_PIN_SDA_PRO_MICRO <&pro_micro 5 GPIO_ACTIVE_HIGH>
 
 // Configure the Power-On-Reset pin
 //
@@ -55,7 +55,7 @@
 //
 // It's ok to use a low-frequency pin for this.
 //yk_do52pro has reset circuit
-//#define MOUSE_PS2_PIN_RST_PRO_MICRO <&pro_micro 9 GPIO_ACTIVE_HIGH>
+#define MOUSE_PS2_PIN_RST_PRO_MICRO <&pro_micro 9 GPIO_ACTIVE_HIGH>
 
 
 // Configure SDA pin using the pinctrl notation
@@ -77,7 +77,7 @@
 //
 // We don't define the SCL pin, because UART uses a baud rate instead of
 // a clock pin.
-#define MOUSE_PS2_PIN_SDA_PINCTRL <NRF_PSEL(UART_RX, 1, 13)>
+#define MOUSE_PS2_PIN_SDA_PINCTRL <NRF_PSEL(UART_RX, 0, 24)>
 
 // Configure UART BAUD Rate
 //
