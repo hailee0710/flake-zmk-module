@@ -52,7 +52,7 @@ U_MSS_TP_S_D      &none   &none   &kp C_VOLUME_DOWN  &kp C_VOLUME_UP  &none     
         tp-settings {
             bindings = <
 &kp TILDE  &kp F1  &kp F2  &kp F3             &kp F4           &kp F5     &kp F6  &kp F7    &kp F8        &kp F9     &kp F10          &kp F11
-U_TOG_TP_SET      U_TOG_TP_SET     &none   U_MSS_TP_S_D              U_MSS_TP_S_I               U_MSS_TP_PT_I    U_MSS_TP_PT_I            U_MSS_TP_S_D             U_MSS_TP_S_I             &none                    U_TOG_TP_SET              U_TOG_TP_SET
+&tog MOUSE_TP_SET      &tog MOUSE_TP_SET     &none   U_MSS_TP_S_D              U_MSS_TP_S_I               U_MSS_TP_PT_I    U_MSS_TP_PT_I            U_MSS_TP_S_D             U_MSS_TP_S_I             &none                    &tog MOUSE_TP_SET              &tog MOUSE_TP_SET
 U_MSS_RESET              U_MSS_RESET              &none                    U_MSS_TP_NI_D            U_MSS_TP_NI_I            U_MSS_TP_PT_D                 U_MSS_TP_PT_D            U_MSS_TP_NI_D            U_MSS_TP_NI_I            &none                    U_MSS_RESET               U_MSS_RESET
 U_MSS_LOG                U_MSS_LOG                &none                    U_MSS_TP_V6_D            U_MSS_TP_V6_I            &none                         &none                    U_MSS_TP_V6_D            U_MSS_TP_V6_I            &none                    U_MSS_LOG                 U_MSS_LOG
            &trans  &trans  &trans             &trans           &mk        &none   &trans    &kp C_VOL_DN  &trans     &kp C_VOLUME_UP
