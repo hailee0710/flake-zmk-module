@@ -39,7 +39,7 @@
 };
 
 #include <input/processors.dtsi>
-#include "include/mouse_tp.dtsi"
+#include "mouse_tp.dtsi"
 
 // We have the trackpoint on the right peripheral split, so
 // set the actual trackpoint as the device for the peripheral. 
