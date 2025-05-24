@@ -41,8 +41,8 @@
 
 // But on the yk_do52pro keyboard the trackpoint is connected to 16 and 15 
 // in my I swapped clock and data to be compatible with rp2040 pioj
-#define MOUSE_PS2_PIN_SCL_PRO_MICRO <&pro_micro 4 GPIO_ACTIVE_HIGH>
-#define MOUSE_PS2_PIN_SDA_PRO_MICRO <&pro_micro 5 GPIO_ACTIVE_HIGH>
+#define MOUSE_PS2_PIN_SCL_PRO_MICRO <&pro_micro 16 GPIO_ACTIVE_HIGH>
+#define MOUSE_PS2_PIN_SDA_PRO_MICRO <&pro_micro 10 GPIO_ACTIVE_HIGH>
 
 // Configure the Power-On-Reset pin
 //
