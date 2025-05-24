@@ -288,13 +288,8 @@ RC(4,1) RC(4,2) RC(4,3) RC(4,4) RC(4,5)  RC(4,6) RC(4,7) RC(4,8) RC(4,9) RC(4,10
         device = <&tpoint_split>;
         input-processors = <&zip_xy_scaler 0 1>;
         scroller {
-            layers = <10>;
+            layers = <2>;
             input-processors = <&zip_xy_transform (INPUT_TRANSFORM_Y_INVERT)>, <&zip_xy_scaler 1 8>, <&zip_xy_to_scroll_mapper>;
-        };
-        mouse {
-            layers = <9>;
-        //    input-processors = <&zip_xy_scaler 1 1>;
-            
         };
 
   };
