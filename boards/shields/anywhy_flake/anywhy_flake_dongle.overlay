@@ -50,7 +50,7 @@
 
   tpoint_listener: tpoint_listener {
         compatible = "zmk,input-listener";
-        status = "ok";
+        status = "okay";
         device = <&tpoint_split>;
         input-processors = <&zip_xy_scaler 0 1>;
         scroller {
