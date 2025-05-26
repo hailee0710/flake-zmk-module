@@ -17,7 +17,7 @@
 #ifdef HAS_MOUSE_TP
   // We store the trackpoint settings in a separate file
   // to make organization a little easier.
-  #include "../boards/shields/anywhy_flake/include/mouse_tp.dtsi"
+  #include "include/mouse_tp.dtsi"
 #endif  // HAS_MOUSE_TP
 
 
