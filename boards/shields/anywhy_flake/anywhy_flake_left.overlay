@@ -25,3 +25,8 @@
 &large_layout {
     kscan = <&kscan0>;
 };
+
+&tpoint_listener {
+    compatible = "zmk,input-listener";
+    status = "disabled";
+};
