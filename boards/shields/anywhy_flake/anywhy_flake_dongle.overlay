@@ -37,3 +37,8 @@
         prechargep = <0x22>;
         };
 }; 
+
+// Enable the trackpoint listener for the central left.
+&tpoint_listener {
+    status = "okay";
+};
