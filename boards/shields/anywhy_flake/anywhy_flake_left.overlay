@@ -25,7 +25,3 @@
 &large_layout {
     kscan = <&kscan0>;
 };
-
-&tpoint_listener {
-    status = "okay";
-};
