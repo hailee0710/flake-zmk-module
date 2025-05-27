@@ -487,7 +487,7 @@
 #ifdef MOUSE_PS2_DRIVER_UART
 
     &uart0 {
-        status = "disabled";
+        status = "okay";
         compatible = "nordic,nrf-uarte";
 
         current-speed = MOUSE_PS2_UART_BAUD_RATE;
@@ -508,7 +508,7 @@
 
     / {
         gpio_ps2: gpio_ps2 {
-            status = "disabled";
+            status = "okay";
 
             compatible = "gpio-ps2";
             scl-gpios = MOUSE_PS2_PIN_SCL_PRO_MICRO;
@@ -521,7 +521,7 @@
 
 / {
     mouse_ps2: mouse_ps2 {
-		status = "disabled";
+		status = "okay";
         compatible = "zmk,input-mouse-ps2";
 
 #ifdef MOUSE_PS2_DRIVER_UART
