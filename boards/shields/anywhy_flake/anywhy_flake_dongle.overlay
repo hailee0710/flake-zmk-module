@@ -4,7 +4,7 @@
     chosen {
         zmk,kscan = &mock_kscan;
         zephyr,display = &oled;
-        zmk,physical-layout = &large_layout;
+        zmk,matrix-transform = &default_transform;
     };
 
     mock_kscan: kscan_1 {
@@ -14,10 +14,6 @@
         events = <0>;
     };
 
-};
-
-&large_layout {
-        kscan = <&mock_kscan>;
 };
 
 &pro_micro_i2c {
