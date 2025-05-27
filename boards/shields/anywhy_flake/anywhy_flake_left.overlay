@@ -25,3 +25,9 @@
 &large_layout {
     kscan = <&kscan0>;
 };
+
+/ {
+	vtrackpoint: virtual_input_trackpoint {
+		compatible = "zmk,virtual-input";
+	};
+};
