@@ -1,5 +1,6 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 #include <physical_layouts.dtsi>
+#include <dt-bindings/zmk/input_transform.h>
 
 / {
     kscan0: kscan0 {
