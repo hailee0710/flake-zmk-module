@@ -8,7 +8,6 @@
 #define HAS_MOUSE_KEYS
 #define HAS_MOUSE_TP
 
-
 #ifdef HAS_MOUSE_KEYS
   #include <dt-bindings/zmk/mouse.h>
   #include <behaviors/mouse_keys.dtsi>
@@ -20,9 +19,6 @@
   #include "include/mouse_tp.dtsi"
 #endif  // HAS_MOUSE_TP
 
-
-
-
 / {
     combos { compatible = "zmk,combos"; };
 
@@ -31,7 +27,6 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&kp P &kp H &kp I &kp M &kp M &kp E &kp O &kp M &kp E &kp O &kp DOT &kp C &kp O &kp M>;
-            label = "MK";
             wait-ms = <1>;
             tap-ms = <1>;
         };
