@@ -260,11 +260,4 @@ RC(4,1) RC(4,2) RC(4,3) RC(4,4) RC(4,5)  RC(4,6) RC(4,7) RC(4,8) RC(4,9) RC(4,10
 
 };
 
-/*
-*   For ZMK Split Input Peripheral
-*
-*/
-#include <input/processors.dtsi>
-#include <zephyr/dt-bindings/input/input-event-codes.h>
-#include <dt-bindings/zmk/input_transform.h>
 

@@ -38,6 +38,8 @@
     kscan = <&kscan0>;
 };
 
+#define HAS_MOUSE_TP
+
 
 #include <input/processors.dtsi>
 #include "include/mouse_tp.dtsi"

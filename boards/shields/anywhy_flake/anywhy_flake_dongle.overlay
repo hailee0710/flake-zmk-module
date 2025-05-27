@@ -38,6 +38,8 @@
         };
 }; 
 
+#define HAS_MOUSE_TP
+
 /{
   split_inputs {
     #address-cells = <1>;
