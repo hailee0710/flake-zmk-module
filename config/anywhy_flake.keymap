@@ -66,4 +66,4 @@
 		// are adjusted in...
 		// zmk-config/config/includes/mouse_tp.dtsi
     };
-}/
+};
