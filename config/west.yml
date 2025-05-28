@@ -2,20 +2,21 @@ manifest:
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
-    - name: mctechnology17
-      url-base: https://github.com/mctechnology17
-    - name: englmaxi
-      url-base: https://github.com/englmaxi
+    - name: urob
+      url-base: https://github.com/urob
+    - name: badjeff
+      url-base: https://github.com/badjeff
   projects:
     - name: zmk
       remote: zmkfirmware
       revision: main
       import: app/west.yml
-    - name: zmk-oled-adapter
-      remote: mctechnology17
+    # Module for PS/2 mouse & TP driver
+    - name: kb_zmk_ps2_mouse_trackpoint_driver
+      remote: badjeff
       revision: main
-    - name: zmk-dongle-display
-      remote: englmaxi
+    - name: zmk-helpers
+      remote: urob
       revision: main
   self:
     path: config

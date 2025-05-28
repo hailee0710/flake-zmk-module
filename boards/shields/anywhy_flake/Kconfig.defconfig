@@ -1,4 +1,7 @@
-if SHIELD_ANYWHY_FLAKE_DONGLE
+if SHIELD_ANYWHY_FLAKE_RIGHT
+
+config NANOPB
+    default n
 
 config ZMK_KEYBOARD_NAME
 	default "Anywhy Flake"
@@ -8,6 +11,12 @@ config ZMK_SPLIT_ROLE_CENTRAL
 
 endif
 
+# Options that should be enabled on both sides
+if SHIELD_ANYWHY_FLAKE_LEFT || SHIELD_ANYWHY_FLAKE_RIGHT
+
+config ZMK_SPLIT
+    default y
+
 if ZMK_DISPLAY
 
 config I2C
@@ -16,11 +25,7 @@ config I2C
 config SSD1306
     default y
 
-choice ZMK_DISPLAY_WORK_QUEUE
-    default ZMK_DISPLAY_WORK_QUEUE_DEDICATED
-endchoice
-
-endif
+endif # ZMK_DISPLAY
 
 if LVGL
 
@@ -37,11 +42,6 @@ choice LV_COLOR_DEPTH
     default LV_COLOR_DEPTH_1
 endchoice
 
-endif
-
-if SHIELD_ANYWHY_FLAKE_DONGLE || SHIELD_ANYWHY_FLAKE_LEFT || SHIELD_ANYWHY_FLAKE_RIGHT
-
-config ZMK_SPLIT
-	default y
+endif # LVGL
 	
 endif
