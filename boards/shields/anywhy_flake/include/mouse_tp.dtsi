@@ -146,7 +146,7 @@
 
     &trackpoint_listener {
       status = "okay";
-    }
+    };
 
     #ifdef MOUSE_PS2_DRIVER_UART
 
