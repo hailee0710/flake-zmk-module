@@ -1,9 +1,17 @@
-if SHIELD_ANYWHY_FLAKE_DONGLE
+if SHIELD_ANYWHY_FLAKE_RIGHT
 
 config ZMK_KEYBOARD_NAME
 	default "Anywhy Flake"
 
 config ZMK_SPLIT_ROLE_CENTRAL
+	default y
+
+endif
+
+
+if SHIELD_ANYWHY_FLAKE_LEFT || SHIELD_ANYWHY_FLAKE_RIGHT
+
+config ZMK_SPLIT
 	default y
 
 if ZMK_DISPLAY
@@ -36,13 +44,5 @@ choice LV_COLOR_DEPTH
 endchoice
 
 endif
-
-endif
-
-
-if SHIELD_ANYWHY_FLAKE_DONGLE || SHIELD_ANYWHY_FLAKE_LEFT || SHIELD_ANYWHY_FLAKE_RIGHT
-
-config ZMK_SPLIT
-	default y
 	
 endif

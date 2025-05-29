@@ -21,9 +21,3 @@
         , <&gpio1 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
         ;
 };
-
-/ {
-	vtrackpoint: virtual_input_trackpoint {
-		compatible = "zmk,virtual-input";
-	};
-};

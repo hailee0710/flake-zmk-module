@@ -10,22 +10,14 @@ manifest:
       url-base: https://github.com/petejohanson
     - name: urob
       url-base: https://github.com/urob
-    - name: badjeff
-      url-base: https://github.com/badjeff
   projects:
     - name: zmk
       remote: infused-kim
       revision: pr-testing/mouse_ps2_module_base
       import: app/west.yml
-    - name: zmk-oled-adapter
-      remote: mctechnology17
-      revision: main
     # Module for PS/2 mouse & TP driver
     - name: kb_zmk_ps2_mouse_trackpoint_driver
       remote: infused-kim
-      revision: main
-    - name: zmk-split-peripheral-input-relay
-      remote: badjeff
       revision: main
   self:
     path: config

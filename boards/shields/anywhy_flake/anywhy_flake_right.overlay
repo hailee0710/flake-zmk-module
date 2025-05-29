@@ -487,7 +487,7 @@
 #ifdef MOUSE_PS2_DRIVER_UART
 
     &uart0 {
-        status = "okay";
+        status = "disabled";
         compatible = "nordic,nrf-uarte";
 
         current-speed = MOUSE_PS2_UART_BAUD_RATE;
@@ -508,7 +508,7 @@
 
     / {
         gpio_ps2: gpio_ps2 {
-            status = "okay";
+            status = "disabled";
 
             compatible = "gpio-ps2";
             scl-gpios = MOUSE_PS2_PIN_SCL_PRO_MICRO;
@@ -521,7 +521,7 @@
 
 / {
     mouse_ps2: mouse_ps2 {
-		status = "okay";
+		status = "disabled";
         compatible = "zmk,input-mouse-ps2";
 
 #ifdef MOUSE_PS2_DRIVER_UART
@@ -535,19 +535,9 @@
 #endif
     };
 
-    vtrackpoint: virtual_input_trackpoint {
-		compatible = "zmk,virtual-input";
-	};
-
-	input_relay_config_trackpoint {
-		compatible = "zmk,split-peripheral-input-relay";
-		device = <&mouse_ps2>;
-		relay-channel = <102>;
-	};
-
     mouse_ps2_input_listener: mouse_ps2_input_listener {
         compatible = "zmk,input-listener-ps2";
-        status = "okay";
+        status = "disabled";
 
         device = <&mouse_ps2>;
 
@@ -556,4 +546,3 @@
 		// zmk-config/config/includes/mouse_tp.dtsi
     };
 };
-
