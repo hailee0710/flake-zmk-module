@@ -102,7 +102,7 @@
 
         msc_down {
             bindings = <&msc SCRL_DOWN>;
-            key-positions = <42 43>;
+            key-positions = <38 39>;
             layers = <0 1>;
         };
     };
