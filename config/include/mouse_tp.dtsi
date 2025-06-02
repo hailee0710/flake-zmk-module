@@ -119,7 +119,7 @@
       scroll-accelerator = <&input_accelerator_scroll>;
 
       scroll-layers = <2>;
-      scroll-layers-reverse-direction-horizontal;
+      //scroll-layers-reverse-direction-horizontal;
 
       xy-swap;
       x-invert;
@@ -151,7 +151,7 @@
     &mouse_ps2 {
 
       // How sensitive the TP is (Default: 128)
-      tp-sensitivity = <48>;
+      tp-sensitivity = <128>;
 
 
       // The maximum mouse movement speed the TP will accelarate to
@@ -166,7 +166,7 @@
       // Enable clicking by tapping on the TP.
       // Not all TPs support this.
       tp-press-to-select;
-      tp-press-to-select-threshold = <3>;
+      tp-press-to-select-threshold = <4>;
 
 
       // Adjust axis settings on the TP

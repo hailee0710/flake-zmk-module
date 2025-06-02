@@ -19,9 +19,6 @@
         // SYM and NAV
         layers = <0 1>;
 
-        // Auto toggle Mouse_TP layer when the mouse moves
-        bindings = <&mouse_ps2_move_tog_layer MOUSE_TP>;
-
         // Use mouse movement event codes
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
@@ -49,7 +46,7 @@
         scale-divisor = <8>;
 
         // Invert scroll direction
-        y-invert;
+        //y-invert;
       };
 
     };
