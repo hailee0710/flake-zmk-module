@@ -7,8 +7,8 @@
     col-gpios
         = <&gpio0 11 GPIO_ACTIVE_HIGH>
         , <&gpio0 10 GPIO_ACTIVE_HIGH>
-        , <&gpio1 11 GPIO_ACTIVE_HIGH>
         , <&gpio1 13 GPIO_ACTIVE_HIGH>
+        , <&gpio1 11 GPIO_ACTIVE_HIGH>
         , <&gpio1 15 GPIO_ACTIVE_HIGH>
         , <&gpio1 4 GPIO_ACTIVE_HIGH>
         ;
