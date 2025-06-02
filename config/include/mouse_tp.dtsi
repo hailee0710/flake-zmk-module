@@ -100,10 +100,10 @@
           compatible = "zmk,input-accelerator";
 
           acceleration-curve = "scroll";
-          acceleration-factor-rate = <25>;
+          acceleration-factor-rate = <30>;
           acceleration-start-offset = <10>;
-          max-speed = <20>;
-          divisor = <20>;
+          max-speed = <30>;
+          divisor = <10>;
 
           enable-interval-based-speed;
           input-default-sending-rate = <PS2_MOUSE_SAMPLING_RATE>;
