@@ -31,19 +31,29 @@
             quick-tap-ms = <150>;
             bindings = <&mo>, <&kp>;
         };
+
+        mkt: layer-mouse-key-tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MKT";
+            bindings = <&mo>, <&mkp>;
+
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+        };
     };
 
     combos {
         compatible = "zmk,combos";
 
         middle_click_right {
-            bindings = <&mkp MCLK>;
+            bindings = <&mkt 2 MCLK>;
             key-positions = <31 32 33>;
             layers = <1 0>;
         };
 
         middle_click_left {
-            bindings = <&mkp MCLK>;
+            bindings = <&mkt 2 MCLK>;
             key-positions = <27 28 26>;
             layers = <1 0>;
         };
@@ -51,63 +61,52 @@
         ms-l-click {
             bindings = <&mkp LCLK>;
             key-positions = <27 28>;
-            layers = <0 1>;
+            layers = <0 1 2>;
         };
 
         ms-l-click-r {
             bindings = <&mkp LCLK>;
             key-positions = <31 32>;
-            layers = <0 1>;
+            layers = <0 1 2>;
         };
 
         ms-r-click {
             bindings = <&mkp RCLK>;
             key-positions = <27 26>;
-            layers = <0 1>;
+            layers = <0 1 2>;
         };
 
         ms-r-click-r {
             bindings = <&mkp RCLK>;
             key-positions = <32 33>;
-            layers = <0 1>;
+            layers = <0 1 2>;
         };
 
         msk_back {
             bindings = <&mkp MB4>;
             key-positions = <39 40>;
-            layers = <0 1>;
+            layers = <0 1 2>;
         };
 
         msk_forward {
             bindings = <&mkp MB5>;
             key-positions = <15 16>;
-            layers = <0 1>;
+            layers = <0 1 2>;
         };
 
         msk_back_r {
             bindings = <&mkp MB4>;
             key-positions = <43 44>;
-            layers = <0 1>;
+            layers = <0 1 2>;
         };
 
         msk_forward_r {
             bindings = <&mkp MB5>;
             key-positions = <19 20>;
-            layers = <0 1>;
-        };
-
-        msc_up {
-            bindings = <&msc SCRL_UP>;
-            key-positions = <14 15>;
-            layers = <0 1>;
-        };
-
-        msc_down {
-            bindings = <&msc SCRL_DOWN>;
-            key-positions = <38 39>;
-            layers = <0 1>;
+            layers = <0 1 2>;
         };
     };
+
 
     macros {
         mk: mk {
