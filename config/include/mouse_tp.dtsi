@@ -118,7 +118,7 @@
       move-accelerator = <&input_accelerator_move>;
       scroll-accelerator = <&input_accelerator_scroll>;
 
-      scroll-layers = <SYM MOUSE_TP_KEYS>;
+      scroll-layers = <2>;
       scroll-layers-reverse-direction-horizontal;
 
       xy-swap;
