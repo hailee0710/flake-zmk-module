@@ -10,6 +10,8 @@ manifest:
       url-base: https://github.com/petejohanson
     - name: urob
       url-base: https://github.com/urob
+    - name: badjeff
+      url-base: https://github.com/badjeff/
   projects:
     - name: zmk
       remote: infused-kim
@@ -18,6 +20,9 @@ manifest:
     # Module for PS/2 mouse & TP driver
     - name: kb_zmk_ps2_mouse_trackpoint_driver
       remote: infused-kim
+      revision: dev/2024-04-acceleration
+    - name: zmk-input-behavior-listener
+      remote: badjeff
       revision: main
   self:
     path: config
