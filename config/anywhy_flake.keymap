@@ -3,6 +3,7 @@
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/ext_power.h>
 #include <dt-bindings/zmk/outputs.h>
+#include <dt-bindings/zmk/pointing.h>
 
 #define HAS_MOUSE_KEYS
 #define HAS_MOUSE_TP
@@ -93,6 +94,18 @@
             key-positions = <19 20>;
             layers = <0 1>;
         };
+
+        msc_up {
+            bindings = <&msc SCRL_UP>;
+            key-positions = <14 15>;
+            layers = <0 1>;
+        };
+
+        msc_down {
+            bindings = <&msc SCRL_DOWN>;
+            key-positions = <42 43>;
+            layers = <0 1>;
+        };
     };
 
     macros {
@@ -120,11 +133,11 @@
 
         fn {
             bindings = <
-&kp TILDE  &kp F1  &kp F2  &kp F3             &kp F4           &kp F5     &kp F6  &kp F7    &kp F8        &kp F9     &kp F10          &kp F11
-&none      U_MSS_RESET    U_MSS_TP_S_D   U_MSS_TP_S_I              U_MSS_LOG            &kp F12    &none   &none     &kp UP        &none      &none            &kp RIGHT_BRACKET
-&none       U_MSS_TP_PT_I   U_MSS_TP_PT_D    &kp C_VOLUME_DOWN  &kp C_VOLUME_UP  U_MSS_RESET      &none   &kp LEFT  &kp DOWN      &kp RIGHT  &none            &none
-&none       U_MSS_TP_NI_D   U_MSS_TP_NI_I     U_MSS_TP_V6_D              U_MSS_TP_V6_I             &none      &none   &none     &none         &none      &none            &none
-           &trans  &trans  &trans             &trans           &mk        &none   &trans    &kp C_VOL_DN  &trans     &kp C_VOLUME_UP
+&kp TILDE  &kp F1         &kp F2         &kp F3             &kp F4              &kp F5          &kp F6  &kp F7    &kp F8        &kp F9     &kp F10          &kp F11
+&none      U_MSS_RESET    U_MSS_TP_S_D   U_MSS_TP_S_I       U_MSS_LOG           &kp F12         &none   &none     &kp UP        &none      &none            &kp RIGHT_BRACKET
+&none      U_MSS_TP_PT_I  U_MSS_TP_PT_D  &kp C_VOLUME_DOWN  &kp C_VOLUME_UP     U_MSS_RESET     &none   &kp LEFT  &kp DOWN      &kp RIGHT  &none            &none
+&none      U_MSS_TP_NI_D  U_MSS_TP_NI_I  U_MSS_TP_V6_D      U_MSS_TP_V6_I       &none           &none   &none     &none         &none      &none            &none
+           &trans         &trans         &trans             &kp DEL             &mk             &none   &trans    &kp C_VOL_DN  &trans     &kp C_VOLUME_UP
             >;
         };
     };
