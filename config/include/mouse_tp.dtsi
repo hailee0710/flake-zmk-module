@@ -89,7 +89,7 @@
           acceleration-factor-max = <130>;
           acceleration-factor-rate = <40>;
           acceleration-start-offset = <5>;
-          max-speed = <50>;
+          max-speed = <100>;
 
           enable-interval-based-speed;
           input-default-sending-rate = <PS2_MOUSE_SAMPLING_RATE>;
@@ -156,7 +156,7 @@
 
       // The maximum mouse movement speed the TP will accelarate to
       // (Default: 97)
-      tp-val6-upper-speed = <187>;
+      tp-val6-upper-speed = <207>;
 
 
       // Not quite sure what it does tbh :) (Default: 6)
@@ -166,7 +166,7 @@
       // Enable clicking by tapping on the TP.
       // Not all TPs support this.
       tp-press-to-select;
-      tp-press-to-select-threshold = <4>;
+      tp-press-to-select-threshold = <10>;
 
 
       // Adjust axis settings on the TP
