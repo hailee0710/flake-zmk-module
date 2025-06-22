@@ -1,5 +1,5 @@
 #include "anywhy_flake.dtsi"
-#include "asterisk_3610.dtsi"
+#include "anywhy_flake_3610.dtsi"
 
 &large_transform {
     col-offset = <6>;
