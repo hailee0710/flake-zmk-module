@@ -1,7 +1,72 @@
+#include <dt-bindings/zmk/mouse.h>
+#include <behaviors/mouse_keys.dtsi>
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/pointing.h>
+
+#define CLICK_TIMEOUT 30
+#define PRIOR_IDLE 50
+
+&mt { flavor = "tap-preferred"; };
 
 / {
+    trackball_listener {
+        compatible = "zmk,input-behavior-listener";
+        device = <&vtrackball>;
+        layers = <0>;
+        evt-type = <INPUT_EV_REL>;
+        x-input-code = <INPUT_REL_X>;
+        y-input-code = <INPUT_REL_Y>;
+        scale-multiplier = <1>;
+        scale-divisor = <4>;
+        //bindings = <&ib_toggle_layer MSK>;
+    };
+
+    trackball_scroll_listener {
+        compatible = "zmk,input-behavior-listener";
+        device = <&vtrackball>;
+        layers = <2>;
+        evt-type = <INPUT_EV_REL>;
+        x-input-code = <INPUT_REL_MISC>;
+        y-input-code = <INPUT_REL_WHEEL>;
+        y-invert;
+        bindings = <&ib_wheel_scaler 1 28>;
+    };
+
+    ib_wheel_scaler: ib_wheel_scaler {
+        compatible = "zmk,input-behavior-scaler";
+        #binding-cells = <2>;
+        evt-type = <INPUT_EV_REL>;
+        input-code = <INPUT_REL_WHEEL>;
+    };
+
+    ib_toggle_layer: ib_toggle_layer {
+        compatible = "zmk,input-behavior-tog-layer";
+        #binding-cells = <1>;
+        time-to-live-ms = <2000>;
+    };
+
+    behaviors {
+        lt: layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <240>;
+            quick-tap-ms = <150>;
+            bindings = <&mo>, <&kp>;
+        };
+
+        mkt: layer-mouse-key-tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MKT";
+            bindings = <&mo>, <&mkp>;
+
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+        };
+    };
+
     combos { compatible = "zmk,combos"; };
 
     macros {
@@ -15,6 +80,86 @@
         };
     };
 
+    combos {
+        compatible = "zmk,combos";
+
+        middle_click_right {
+            bindings = <&mkt 2 MCLK>;
+            key-positions = <31 32 33>;
+            layers = <1 0 2>;
+        };
+
+        middle_click_left {
+            bindings = <&mkt 2 MCLK>;
+            key-positions = <27 28 26>;
+            layers = <1 0 2>;
+        };
+
+        ms-l-click {
+            bindings = <&mkp LCLK>;
+            key-positions = <27 28>;
+            layers = <0 1 2>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
+            timeout-ms = <CLICK_TIMEOUT>;
+        };
+
+        ms-l-click-r {
+            bindings = <&mkp LCLK>;
+            key-positions = <31 32>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
+        };
+
+        ms-r-click {
+            bindings = <&mkp RCLK>;
+            key-positions = <27 26>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
+        };
+
+        ms-r-click-r {
+            bindings = <&mkp RCLK>;
+            key-positions = <32 33>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
+        };
+
+        msk_back {
+            bindings = <&mkp MB4>;
+            key-positions = <39 40>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
+        };
+
+        msk_forward {
+            bindings = <&mkp MB5>;
+            key-positions = <15 16>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
+        };
+
+        msk_back_r {
+            bindings = <&mkp MB4>;
+            key-positions = <43 44>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
+        };
+
+        msk_forward_r {
+            bindings = <&mkp MB5>;
+            key-positions = <19 20>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
@@ -24,7 +169,7 @@
 &kp TAB    &kp Q     &kp W     &kp E      &kp R     &kp T        &kp Y      &kp U      &kp I      &kp O     &kp P      &kp LBKT
 &mo 1      &kp A     &kp S     &kp D      &kp F     &kp G        &kp H      &kp J      &kp K      &kp L     &kp SEMI   &kp APOS
 &kp LSHFT  &kp Z     &kp X     &kp C      &kp V     &kp B        &kp N      &kp M      &kp COMMA  &kp DOT   &kp FSLH   &mt RIGHT_SHIFT EQUAL
-           &kp LALT  &kp LGUI  &kp LCTRL  &kp BSPC  &kp ENTER    &kp ENTER  &kp SPACE  &kp LEFT   &kp BSLH  &kp RIGHT
+           &kp LALT  &kp LGUI  &kp LCTRL  &kp BSPC  &kp ENTER    &kp ENTER  &kp SPACE  
             >;
         };
 
@@ -34,7 +179,17 @@
 &none      &none   &none   &none              &none            &kp F12    &none   &none     &kp UP        &none      &none            &kp RIGHT_BRACKET
 &none      &none   &none   &kp C_VOLUME_DOWN  &kp C_VOLUME_UP  &none      &none   &kp LEFT  &kp DOWN      &kp RIGHT  &none            &none
 &none      &none   &none   &none              &none            &none      &none   &none     &none         &none      &none            &none
-           &trans  &trans  &trans             &trans           &mk        &none   &trans    &kp C_VOL_DN  &trans     &kp C_VOLUME_UP
+           &trans  &trans  &trans             &trans           &mk        &none   &trans    
+            >;
+        };
+
+        scroll {
+            bindings = <
+&kp TILDE  &kp F1  &kp F2  &kp F3             &kp F4           &kp F5     &kp F6  &kp F7    &kp F8        &kp F9     &kp F10          &kp F11
+&none      &none   &none   &none              &none            &kp F12    &none   &none     &kp UP        &none      &none            &kp RIGHT_BRACKET
+&none      &none   &none   &kp C_VOLUME_DOWN  &kp C_VOLUME_UP  &none      &none   &kp LEFT  &kp DOWN      &kp RIGHT  &none            &none
+&none      &none   &none   &none              &none            &none      &none   &none     &none         &none      &none            &none
+           &trans  &trans  &trans             &trans           &mk        &none   &trans    
             >;
         };
     };
