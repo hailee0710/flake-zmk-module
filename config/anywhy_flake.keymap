@@ -67,8 +67,6 @@
         };
     };
 
-    combos { compatible = "zmk,combos"; };
-
     macros {
         mk: mk {
             compatible = "zmk,behavior-macro";
