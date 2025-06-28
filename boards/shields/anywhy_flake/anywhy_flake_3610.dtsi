@@ -48,5 +48,42 @@
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
         y-input-code = <INPUT_REL_Y>;
+
+        force-awake;
+        /* keep the sensor awake while ZMK activity state is ACTIVE,
+           fallback to normal downshift mode after ZMK goes into IDLE / SLEEP mode.
+           thus, the sensor would be a `wakeup-source` */
+    };
+};
+
+/ {
+    split_inputs {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        trackball_split: trackball_split@0 {
+            compatible = "zmk,input-split";
+            reg = <0>;
+        };
+    };
+
+    trackball_listener: trackball_listener {
+        compatible = "zmk,input-listener";
+        status = "disabled"; // overridden on central
+        device = <&trackball_split>;
+         /* base processor chain on all layers */
+        input-processors = <
+            &zip_xy_scaler 1 4
+            &zip_xy_transform (INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT)
+        >;
+
+        scroller: scroller {
+            layers           = <2>;
+            input-processors = <
+                &zip_xy_to_scroll_mapper                         // Converts XY movement to scroll events
+                &zip_scroll_scaler 1 16                           // Scales the scroll speed (e.g., 1/6 speed)
+                &zip_scroll_transform (INPUT_TRANSFORM_Y_INVERT) // Inverts the scroll direction
+            >;
+        };
     };
 };

@@ -1,10 +1,21 @@
 #include "anywhy_flake.dtsi"
+#include "asterisk_3610.dtsi"
+
+&trackball_split {
+  status = "okay";
+};
+
+/* enable the listener on central */
+&trackball_listener {
+  status = "okay";
+};
 
 / {
     chosen {
         zmk,kscan = &mock_kscan;
         zephyr,display = &oled;
         zmk,physical-layout = &large_layout;
+        zmk,input-device    = &trackball_split;
     };
 
     mock_kscan: kscan_1 {
@@ -37,15 +48,3 @@
         prechargep = <0x22>;
         };
 }; 
-
-/ {
-	vtrackball: virtual_input_trackball {
-		compatible = "zmk,virtual-input";
-	};
-
-	input_relay_config_trackball {
-		compatible = "zmk,split-peripheral-input-relay";
-		device = <&vtrackball>;
-		relay-channel = <102>;
-	};
-};
