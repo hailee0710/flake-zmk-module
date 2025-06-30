@@ -84,7 +84,7 @@
             input-processors = <
                 &zip_xy_to_scroll_mapper                         // Converts XY movement to scroll events
                 &zip_scroll_scaler 1 16                           // Scales the scroll speed (e.g., 1/6 speed)
-                &zip_xy_transform (INPUT_TRANSFORM_X_INVERT)
+                &zip_scroll_transform (INPUT_TRANSFORM_X_INVERT)
             >;
         };
     };
