@@ -110,3 +110,14 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5)  RC(3,6) RC(3,7) RC(3,8) RC(3,9)
     };
 
 };
+
+/{
+    esb_split {
+        compatible = "zmk,esb-split";
+        // These are arbitrary default addresses. In end user products
+        // different addresses should be used for each set of devices.
+        base-addr-0 = <0xE7 0xE7 0xE7 0xE7>;
+        base-addr-1 = <0xC2 0xC2 0xC2 0xC2>;
+        addr-prefix = <0xE7 0xC2 0xC3 0xC4 0xC5 0xC6 0xC7 0xC8>;
+    };
+};
