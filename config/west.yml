@@ -4,17 +4,16 @@ manifest:
       url-base: https://github.com/zmkfirmware
     - name: badjeff
       url-base: https://github.com/badjeff
-    - name: mctechnology17
-      url-base: https://github.com/mctechnology17
+    - name: joaopedropio                          
+      url-base: https://github.com/joaopedropio
   projects:
     - name: zmk
       remote: zmkfirmware
       revision: main
       import: app/west.yml
-    - name: zmk-oled-adapter
-      remote: mctechnology17
-      revision: main
-      revision: main
+    - name: snake-module                        
+      remote: joaopedropio                       
+      revision: master
     - name: zmk-pmw3610-driver
       remote: badjeff
       revision: main
