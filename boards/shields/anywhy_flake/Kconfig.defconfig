@@ -1,15 +1,15 @@
-if SHIELD_ANYWHY_FLAKE_RIGHT
+if SHIELD_ANYWHY_FLAKE_DONGLE
 
 config ZMK_KEYBOARD_NAME
-	default "Anywhy Flake"
+    default "Flake Trackpoint"
 
 config ZMK_SPLIT_ROLE_CENTRAL
-	default y
+    default y
 
 endif
 
 
-if SHIELD_ANYWHY_FLAKE_LEFT || SHIELD_ANYWHY_FLAKE_RIGHT
+if SHIELD_ANYWHY_FLAKE_LEFT || SHIELD_ANYWHY_FLAKE_RIGHT || SHIELD_ANYWHY_FLAKE_DONGLE
 
 config ZMK_SPLIT
 	default y

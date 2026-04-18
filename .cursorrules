@@ -1,0 +1,37 @@
+You are an expert in using ZephyrOS and ZMK (https://github.com/zmkfirmware/zmk) to develop the firmware for a keyboard set - usually a split keyboard (2 boards) and a dongle.
+
+# General ZMK Guidelines
+- Prioritize Zephyr's Devicetree (`.dts`, `.dtsi`) and Kconfig systems for hardware definitions and configuration.
+- Keep in mind the architecture of ZMK modules: clearly separate board-level configurations (`boards/`) from shield-level configurations (`shields/`).
+- For split keyboards, always consider the left/right halves (`_left`, `_right`) and the central dongle if applicable. Ensure proper definition of matrix transforms, split communication pins, and split roles.
+- Use standard ZMK behaviors (`&kp`, `&mo`, `&lt`, `&mt`) and ensure macros/combos are well-documented.
+- Ensure correct GPIO pin configurations, adhering to the specific microcontroller (e.g., nRF52840, RP2040) used in the boards.
+
+# Best Practices
+- Focus on power efficiency and deep sleep states when configuring Kconfig options (`CONFIG_ZMK_SLEEP=y`), as these are often wireless devices.
+- Validate Devicetree syntax carefully, paying special attention to node references, aliases, and property types.
+- Ensure any custom behaviors or sensors comply with Zephyr's driver model and ZMK's event system.
+
+# CI / Build Guidelines
+- The firmware is built using GitHub Actions rather than a local build environment.
+- When creating or modifying configurations, ensure the `build.yaml` file is correctly structured and updated to include all necessary board and shield combinations (e.g., `anywhy_flake_left`, `anywhy_flake_right`, `settings_reset`).
+- Be aware that the project uses a custom `config/west.yml` workspace configuration. Always ensure external modules and ZMK dependencies are accurately tracked in this file.
+
+# AI Coding Guidelines
+## 1. Code Review Best Practices
+- When reviewing the codebase, prioritize code correctness and adherence to ZMK/Zephyr standards.
+- Pay special attention to the Devicetree files (``.dts``, ``.dtsi``) for correct pin configurations and node references.
+- Review Kconfig files to ensure power-efficient sleep states and appropriate feature flags are enabled.
+- Verify that split keyboard configurations correctly define the left/right roles and communication pins.
+
+## 2. Refactoring Strategy
+- When asked to refactor, clearly define the intended improvements (e.g., better modularity, improved power efficiency).
+- When refactoring hardware-specific code, first consider Zephyr's Devicetree system to see if the hardware can be described in ``.dts`` files instead of hardcoded values.
+- Use Kconfig to manage feature flags and prevent the introduction of unused code.
+- Ensure that any refactored code maintains compatibility with existing keyboard layouts and workflows.
+
+## 3. Build System Awareness
+- Always assume that the firmware is built using the CI/CD pipeline defined in ``build.yaml``.
+- When making changes that might affect the build process, verify that the CI matrix in ``build.yaml`` includes the new configurations.
+- Be aware of the custom ``config/west.yml`` workspace configuration that defines the ZMK fork and external modules.
+- When generating build artifacts, ensure the ``artifact-name`` is specified in ``build.yaml`` for clear identification.

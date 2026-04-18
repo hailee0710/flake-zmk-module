@@ -9,5 +9,6 @@ features:
   - keys
   - studio
 siblings:
-  - asterisk_left
-  - asterisk_right
+  - anywhy_flake_left
+  - anywhy_flake_right
+  - anywhy_flake_dongle
