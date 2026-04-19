@@ -22,6 +22,6 @@
         ;
 };
 
-&large_layout {
+&anywhy_flake_layout {
     kscan = <&kscan0>;
 };
