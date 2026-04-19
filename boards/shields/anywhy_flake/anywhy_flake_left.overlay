@@ -21,3 +21,7 @@
         , <&gpio1 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
         ;
 };
+
+&large_layout {
+    kscan = <&kscan0>;
+};

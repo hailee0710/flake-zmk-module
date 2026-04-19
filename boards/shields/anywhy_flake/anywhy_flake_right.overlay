@@ -30,6 +30,11 @@
 };
 
 
+&large_layout {
+    kscan = <&kscan0>;
+};
+
+
 /*
  * PS/2 Mouse / Trackpoint - User Configuration
  *

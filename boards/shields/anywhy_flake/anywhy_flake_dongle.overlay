@@ -9,6 +9,26 @@
 #include <input/processors.dtsi>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 
+chosen {
+        zmk,kscan = &mock_kscan;
+        zephyr,display = &oled;
+        zmk,physical-layout = &large_layout;
+    };
+
+    mock_kscan: kscan_1 {
+        compatible = "zmk,kscan-mock";
+        columns = <0>;
+        rows = <0>;
+        events = <0>;
+    };
+
+};
+
+&large_layout {
+        kscan = <&mock_kscan>;
+};
+
+
 &trackpoint_listener {
     status = "okay";
 };
