@@ -11,21 +11,21 @@
     compatible = "zmk,kscan-gpio-matrix";
     wakeup-source;
 
-    col-gpios
-        = <&gpio0 9 GPIO_ACTIVE_HIGH>
-        , <&gpio0 10 GPIO_ACTIVE_HIGH>
-        , <&gpio1 11 GPIO_ACTIVE_HIGH>
-        , <&gpio1 13 GPIO_ACTIVE_HIGH>
-        , <&gpio0 20 GPIO_ACTIVE_HIGH>
+     col-gpios
+        = <&gpio0 6 GPIO_ACTIVE_HIGH>
+        , <&gpio0 8 GPIO_ACTIVE_HIGH>
         , <&gpio0 17 GPIO_ACTIVE_HIGH>
+        , <&gpio0 20 GPIO_ACTIVE_HIGH>
+        , <&gpio0 22 GPIO_ACTIVE_HIGH>
+        , <&gpio0 24 GPIO_ACTIVE_HIGH>
         ;
 
     row-gpios
-        = <&gpio0 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-        , <&gpio0 8 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        = <&gpio0 9 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio1 6 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
         , <&gpio1 4  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-        , <&gpio1 6  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
-        , <&gpio0 31  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio1 15  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+        , <&gpio0 2  (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
         ;
 };
 
@@ -49,10 +49,10 @@
 
 #define MOUSE_PS2_DRIVER_UART
 
-#define MOUSE_PS2_PIN_SCL_PRO_MICRO <&pro_micro 4 GPIO_ACTIVE_HIGH>
-#define MOUSE_PS2_PIN_SDA_PRO_MICRO <&pro_micro 5 GPIO_ACTIVE_HIGH>
-#define MOUSE_PS2_PIN_RST_PRO_MICRO <&pro_micro 6 GPIO_ACTIVE_HIGH>
-#define MOUSE_PS2_PIN_SDA_PINCTRL <NRF_PSEL(UART_RX, 0, 24)>
+#define MOUSE_PS2_PIN_SCL <&gpio0 11 GPIO_ACTIVE_HIGH>
+#define MOUSE_PS2_PIN_SDA <&gpio1 0 GPIO_ACTIVE_HIGH>
+#define MOUSE_PS2_PIN_RST <&gpio0 10 GPIO_ACTIVE_HIGH>
+#define MOUSE_PS2_PIN_SDA_PINCTRL <NRF_PSEL(UART_RX, 1, 0)>
 #define MOUSE_PS2_UART_BAUD_RATE <14400>
 
 /*
@@ -305,8 +305,8 @@
 	    ps2-device = <&gpio_ps2>;
 #endif
 
-#ifdef MOUSE_PS2_PIN_RST_PRO_MICRO
-        rst-gpios = MOUSE_PS2_PIN_RST_PRO_MICRO;
+#ifdef MOUSE_PS2_PIN_RST
+        rst-gpios = MOUSE_PS2_PIN_RST;
 #endif
     };
 
@@ -327,8 +327,8 @@
     uart_ps2: uart_ps2 {
         status="disabled";
         compatible = "uart-ps2";
-        scl-gpios = MOUSE_PS2_PIN_SCL_PRO_MICRO;
-        sda-gpios = MOUSE_PS2_PIN_SDA_PRO_MICRO;
+        scl-gpios = MOUSE_PS2_PIN_SCL;
+        sda-gpios = MOUSE_PS2_PIN_SDA;
     };
 };
 
