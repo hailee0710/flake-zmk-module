@@ -65,7 +65,8 @@
 // In UART two different pins are used for receiving and transmitting, but PS/2
 // uses the same pin for both.
 //
-// The UART config still requires both pins to be configured. So we use one of
+// The UART config still requires both pins to be configured. So we use
+ one of
 // the nrf52 pins that are not exposed on the nice!nano board.
 //
 // Do NOT change these if you are using a nice!nano (or a clone of it)
@@ -115,9 +116,9 @@
 // step `xxxx_right - nice_nano_v2 Devicetree file` into a file and run the
 // script on it.
 
-// gpiote should have the highest interrupt priority (0)
+// GPIOTE at priority 2 — UART0 gets priority 0 for PS/2 reads
 &gpiote {
-    interrupts = < 6 0 >;
+    interrupts = < 6 2 >;
 };
 
 // All other priorities should be two levels lower than their defaults
@@ -134,8 +135,9 @@
     interrupts = < 1 3 >;
 };
 
+// UART0 at priority 0 — PS/2 UART needs highest priority for reliable reads
 &uart0 {
-    interrupts = < 2 3 >;
+    interrupts = < 2 0 >;
 };
 
 &i2c0 {
@@ -336,16 +338,22 @@
 &mouse_ps2 {
     status = "okay";
 	disable-clicking;
-    tp-sensitivity = <140>; 
-    tp-neg-inertia = <1>; 
-    tp-val6-upper-speed = <182>; 
+    tp-sensitivity = <140>;
+    tp-neg-inertia = <1>;
+    tp-val6-upper-speed = <182>;
 	tp-xy-swap;
     tp-x-invert;
 	tp-y-invert;
 };
 
+/*
+ * IMPORTANT: mouse_ps2_input_listener is DISABLED on the peripheral.
+ * On a split keyboard, only the central (dongle) should generate HID reports.
+ * The trackpoint events are forwarded to the dongle via &trackpoint_split,
+ * and the dongle's &trackpoint_listener generates the actual mouse reports.
+ */
 &mouse_ps2_input_listener {
-  status = "okay";
+  status = "disabled";
 };
 
 &uart0 {

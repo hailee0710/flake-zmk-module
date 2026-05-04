@@ -6,10 +6,6 @@
 
 #include "split_inputs.dtsi"
 #include "anywhy_flake.dtsi"
-#include <input/processors.dtsi>
-#include <input/processors/scaler.dtsi>
-#include <input/processors/code_mapper.dtsi>
-#include <zephyr/dt-bindings/input/input-event-codes.h>
 
 / {
     chosen {
@@ -24,48 +20,15 @@
         rows = <0>;
         events = <0>;
     };
-
-    /* Sensitivity scaler - adjusts trackpoint cursor speed.
-     * Takes two cells: <multiplier divider>.
-     *   <2 1> = 2x speed, <1 2> = half speed
-     */
-    zip_xy_scaler: zip_xy_scaler {
-        compatible = "zmk,input-processor-scaler";
-        #input-processor-cells = <2>;
-    };
-
-    /* Scroll mode processor - converts XY movement to scroll wheel.
-     * Used when a scroll layer is activated in the keymap
-     * (e.g., &mo 6) and this processor is added to the listener's
-     * scroll sub-node.
-     */
-    zip_xy_to_scroll: zip_xy_to_scroll {
-        compatible = "zmk,input-processor-code-mapper";
-        #input-processor-cells = <0>;
-        type = <INPUT_EV_REL>;
-        map = <INPUT_REL_X INPUT_REL_HWHEEL>, <INPUT_REL_Y INPUT_REL_WHEEL>;
-    };
 };
 
 &anywhy_flake_layout {
     kscan = <&mock_kscan>;
 };
 
+
 &trackpoint_listener {
     status = "okay";
-    /* 2x sensitivity scaling via zip_xy_scaler (multiplier=2, divider=1).
-     * Adjust the multiplier value to change trackpoint cursor speed:
-     *   <1 1> = default speed, <2 1> = 2x, <1 2> = half speed
-     */
-    input-processors = <&zip_xy_scaler 2 1>;
-
-    /* Layer 2 (scroll): reduced sensitivity + XY-to-scroll conversion.
-     * Activated when the scroll layer is active via the middle-click hold combo.
-     */
-    scroll {
-        layers = <2>;
-        input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll>;
-    };
 };
 
 &pro_micro_i2c {
