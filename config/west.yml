@@ -5,7 +5,7 @@ manifest:
     - name: mctechnology17
       url-base: https://github.com/mctechnology17
     - name: mwlaboratories
-      url-base: https://github.com/mwlaboratories/kb_zmk_ps2_mouse_trackpoint_driver
+      url-base: https://github.com/mwlaboratories
     - name: englmaxi
       url-base: https://github.com/englmaxi
   projects:
