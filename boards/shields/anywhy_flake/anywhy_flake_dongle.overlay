@@ -25,6 +25,15 @@
         events = <0>;
     };
 
+    /* Sensitivity scaler - adjusts trackpoint cursor speed.
+     * Takes two cells: <multiplier divider>.
+     *   <2 1> = 2x speed, <1 2> = half speed
+     */
+    zip_xy_scaler: zip_xy_scaler {
+        compatible = "zmk,input-processor-scaler";
+        #input-processor-cells = <2>;
+    };
+
     /* Scroll mode processor - converts XY movement to scroll wheel.
      * Used when a scroll layer is activated in the keymap
      * (e.g., &mo 6) and this processor is added to the listener's
