@@ -29,6 +29,7 @@
     zip_xy_scaler: zip_xy_scaler {
         compatible = "zmk,input-processor-scaler";
         #input-processor-cells = <2>;
+        type = <INPUT_EV_REL>;
     };
 
     /* Scroll converter — converts XY movement to scroll wheel.
