@@ -4,8 +4,8 @@ manifest:
       url-base: https://github.com/zmkfirmware
     - name: mctechnology17
       url-base: https://github.com/mctechnology17
-    - name: madswolf
-      url-base: https://github.com/madswolf
+    - name: mwlaboratories
+      url-base: https://github.com/mwlaboratories/kb_zmk_ps2_mouse_trackpoint_driver
     - name: englmaxi
       url-base: https://github.com/englmaxi
   projects:
@@ -15,7 +15,7 @@ manifest:
       import: app/west.yml
     # Module for PS/2 mouse & TP driver
     - name: kb_zmk_ps2_mouse_trackpoint_driver
-      remote: madswolf
+      remote: mwlaboratories
       revision: main
     - name: zmk-dongle-display
       remote: englmaxi

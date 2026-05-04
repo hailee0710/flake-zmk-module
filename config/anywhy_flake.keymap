@@ -12,6 +12,10 @@
 // to make organization a little easier.
 #include "include/mouse_tp.dtsi"
 
+#define CLICK_TIMEOUT 30
+#define PRIOR_IDLE 50
+
+&mt { flavor = "tap-preferred"; };
 
 / {
     behaviors {
@@ -23,80 +27,111 @@
             quick-tap-ms = <150>;
             bindings = <&mo>, <&kp>;
         };
+
+        mkt: layer_mouse_key_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MKT";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&mkp>;
+        };
     };
 
     combos {
         compatible = "zmk,combos";
 
         middle_click_right {
-            bindings = <&mkp MCLK>;
+            bindings = <&mkt 2 MCLK>;
             key-positions = <31 32 33>;
-            layers = <1 0>;
+            layers = <0 1 2>;
         };
 
         middle_click_left {
-            bindings = <&mkp MCLK>;
+            bindings = <&mkt 2 MCLK>;
             key-positions = <27 28 26>;
-            layers = <1 0>;
+            layers = <0 1 2>;
         };
 
         ms-l-click {
             bindings = <&mkp LCLK>;
             key-positions = <27 28>;
-            layers = <0 1>;
+            layers = <0 1 2>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
+            timeout-ms = <CLICK_TIMEOUT>;
         };
 
         ms-l-click-r {
             bindings = <&mkp LCLK>;
             key-positions = <31 32>;
-            layers = <0 1>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
         };
 
         ms-r-click {
             bindings = <&mkp RCLK>;
             key-positions = <27 26>;
-            layers = <0 1>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
         };
 
         ms-r-click-r {
             bindings = <&mkp RCLK>;
             key-positions = <32 33>;
-            layers = <0 1>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
         };
 
         msk_back {
             bindings = <&mkp MB4>;
             key-positions = <39 40>;
-            layers = <0 1>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
         };
 
         msk_forward {
             bindings = <&mkp MB5>;
             key-positions = <15 16>;
-            layers = <0 1>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
         };
 
         msk_back_r {
             bindings = <&mkp MB4>;
             key-positions = <43 44>;
-            layers = <0 1>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
         };
 
         msk_forward_r {
             bindings = <&mkp MB5>;
             key-positions = <19 20>;
-            layers = <0 1>;
+            layers = <0 1 2>;
+            timeout-ms = <CLICK_TIMEOUT>;
+            require-prior-idle-ms = <PRIOR_IDLE>;
         };
 
         msc_up {
             bindings = <&msc SCRL_UP>;
             key-positions = <14 15>;
-            layers = <0 1>;
+            layers = <0 1 2>;
         };
 
         msc_down {
             bindings = <&msc SCRL_DOWN>;
             key-positions = <38 39>;
+            layers = <0 1 2>;
+        };
+
+        shift {
+            bindings = <&kp LEFT_SHIFT>;
+            key-positions = <51 54>;
             layers = <0 1>;
         };
     };
@@ -106,6 +141,7 @@
             compatible = "zmk,behavior-macro";
             #binding-cells = <0>;
             bindings = <&kp P &kp H &kp I &kp M &kp M &kp E &kp O &kp M &kp E &kp O &kp DOT &kp C &kp O &kp M>;
+            label = "MK";
             wait-ms = <1>;
             tap-ms = <1>;
         };
@@ -126,14 +162,23 @@
 
         fn {
             bindings = <
-&kp TILDE  &kp F1         &kp F2         &kp F3             &kp F4              &kp F5          &kp F6  &kp F7    &kp F8        &kp F9     &kp F10          &kp F11
-&none      U_MSS_RESET    U_MSS_TP_S_D   U_MSS_TP_S_I       U_MSS_LOG           &kp F12         &none   &none     &kp UP        &none      &none            &kp RIGHT_BRACKET
-&none      U_MSS_TP_PT_I  U_MSS_TP_PT_D  &kp C_VOLUME_DOWN  &kp C_VOLUME_UP     U_MSS_RESET     &none   &kp LEFT  &kp DOWN      &kp RIGHT  &none            &none
-&none      U_MSS_TP_NI_D  U_MSS_TP_NI_I  U_MSS_TP_V6_D      U_MSS_TP_V6_I       &none           &none   &none     &none         &none      &none            &none
-           &trans         &trans         &trans             &kp DEL             &mk             &none   &trans                  &kp C_VOL_DN  &kp C_VOLUME_UP
+&kp TILDE  &kp F1       &kp F2          &kp F3             &kp F4           &kp F5     &kp F6   &kp F7     &kp F8     &kp F9     &kp F10   &kp F11
+&trans     &trans       &kp C_PREVIOUS  &kp C_PLAY_PAUSE   &kp C_NEXT       &kp F12    &trans   &kp HOME   &kp UP     &kp END    &trans    &trans
+&trans     &trans       &kp C_MUTE      &kp C_VOLUME_DOWN  &kp C_VOLUME_UP  &trans     &trans   &kp LEFT   &kp DOWN   &kp RIGHT  &trans    &trans
+&trans     &trans       &trans          &trans             &trans           &trans     &trans   &trans     &trans     &trans     &trans    &trans
+           U_MSS_RESET  U_MSS_TP_S_D    U_MSS_TP_S_I       &trans           &mk        &trans   &trans                &trans     &trans
+            >;
+        };
+
+        scroll {
+            bindings = <
+&none &none &none &none &none &none    &none &none &none &none &none &none
+&none &none &none &none &none &none    &none &none &none &none &none &none
+&none &none &none &none &none &none    &none &none &none &none &none &none
+&none &none &none &none &none &none    &none &none &none &none &none &none
+      &none &none &none &none &none    &none &none       &none &none
             >;
         };
     };
 
 };
-
