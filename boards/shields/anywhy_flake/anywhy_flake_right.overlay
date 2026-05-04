@@ -65,8 +65,7 @@
 // In UART two different pins are used for receiving and transmitting, but PS/2
 // uses the same pin for both.
 //
-// The UART config still requires both pins to be configured. So we use
- one of
+// The UART config still requires both pins to be configured. So we use one of
 // the nrf52 pins that are not exposed on the nice!nano board.
 //
 // Do NOT change these if you are using a nice!nano (or a clone of it)
