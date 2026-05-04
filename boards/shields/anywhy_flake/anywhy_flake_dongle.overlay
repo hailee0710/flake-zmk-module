@@ -13,6 +13,11 @@
         zmk,kscan = &mock_kscan;
         zephyr,display = &oled;
         zmk,physical-layout = &anywhy_flake_layout;
+        /* USB CDC ACM — needed for CONFIG_ZMK_USB_LOGGING=y (debug builds).
+         * Mutually exclusive with the studio-rpc-usb-uart snippet;
+         * only use one or the other. */
+        zephyr,console = <&cdc_acm_uart>;
+        zephyr,shell-uart = <&cdc_acm_uart>;
     };
 
     mock_kscan: kscan_1 {
@@ -46,6 +51,14 @@
 
 &anywhy_flake_layout {
     kscan = <&mock_kscan>;
+};
+
+/* CDC ACM UART for USB logging (CONFIG_ZMK_USB_LOGGING=y).
+ * Conflicts with studio-rpc-usb-uart snippet — only use one. */
+&zephyr_udc0 {
+    cdc_acm_uart: cdc_acm_uart {
+        compatible = "zephyr,cdc-acm-uart";
+    };
 };
 
 &trackpoint_listener {
