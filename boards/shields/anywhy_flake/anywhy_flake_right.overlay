@@ -337,12 +337,9 @@
 &mouse_ps2 {
     status = "okay";
 	disable-clicking;
-    tp-sensitivity = <140>;
+    tp-sensitivity = <128>;
     tp-neg-inertia = <1>;
     tp-val6-upper-speed = <182>;
-	tp-xy-swap;
-    tp-x-invert;
-	tp-y-invert;
 };
 
 /*
