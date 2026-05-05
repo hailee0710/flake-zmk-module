@@ -338,7 +338,7 @@
     status = "okay";
 	disable-clicking;
     tp-sensitivity = <148>;
-    tp-neg-inertia = <8>;
+    tp-neg-inertia = <10>;
     tp-val6-upper-speed = <255>;
 };
 
