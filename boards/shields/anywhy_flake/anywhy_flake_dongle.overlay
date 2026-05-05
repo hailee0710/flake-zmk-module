@@ -7,6 +7,7 @@
 #include "split_inputs.dtsi"
 #include "anywhy_flake.dtsi"
 #include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <dt-bindings/zmk/input_transform.h>
 
 / {
     chosen {
@@ -50,14 +51,18 @@
 
 &trackpoint_listener {
     status = "okay";
-    /* 2x sensitivity scaling. Tune <multiplier divider> to adjust speed. */
-    input-processors = <&zip_xy_scaler 2 1>;
+    /* Transform (swap XY + invert both axes) + 2x sensitivity scaling.
+     * Tune <multiplier divider> to adjust speed. */
+    input-processors = <&zip_xy_transform INPUT_TRANSFORM_XY_SWAP | INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT>,
+                       <&zip_xy_scaler 2 1>;
 
-    /* Layer 2 (scroll): reduced sensitivity + XY-to-scroll conversion.
+    /* Layer 2 (scroll): transform + reduced sensitivity + XY-to-scroll conversion.
      * Active when middle-click combo is held. */
     scroll {
         layers = <2>;
-        input-processors = <&zip_xy_scaler 1 4>, <&zip_xy_to_scroll>;
+        input-processors = <&zip_xy_transform INPUT_TRANSFORM_XY_SWAP | INPUT_TRANSFORM_X_INVERT | INPUT_TRANSFORM_Y_INVERT>,
+                           <&zip_xy_scaler 1 4>,
+                           <&zip_xy_to_scroll>;
     };
 };
 
