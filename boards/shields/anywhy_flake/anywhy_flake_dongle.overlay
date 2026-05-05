@@ -42,6 +42,19 @@
         type = <INPUT_EV_REL>;
         map = <INPUT_REL_X INPUT_REL_HWHEEL>, <INPUT_REL_Y INPUT_REL_WHEEL>;
     };
+
+    /* Axis transform — swaps XY and/or inverts axes.
+     * Takes one cell value as bitmask:
+     *   1 = XY swap, 2 = X invert, 4 = Y invert
+     *   Combine: 7 = all three (1|2|4)
+     */
+    zip_xy_transform: zip_xy_transform {
+        compatible = "zmk,input-processor-transform";
+        #input-processor-cells = <1>;
+        type = <INPUT_EV_REL>;
+        y-codes = <INPUT_REL_Y>;
+        x-codes = <INPUT_REL_X>;
+    };
 };
 
 &anywhy_flake_layout {
