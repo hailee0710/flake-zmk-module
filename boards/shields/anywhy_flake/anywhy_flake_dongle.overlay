@@ -63,16 +63,18 @@
 
 &trackpoint_listener {
     status = "okay";
-    /* XY axis swap + 2x sensitivity scaling.
-     * Tune <multiplier divider> to adjust speed. */
+    /* XY axis swap + 1x sensitivity scaling.
+     * Tune <multiplier divider> to adjust speed:
+     *   <1 1> = normal, <2 1> = 2x, <1 2> = half */
     input-processors = <&zip_xy_transform 1>,
-                       <&zip_xy_scaler 2 1>;
+                       <&zip_xy_scaler 1 1>;
 
-    /* Layer 2 (scroll): XY swap + reduced sensitivity + XY-to-scroll conversion.
-     * Active when middle-click combo is held. */
+    /* Layer 2 (scroll): XY swap + Y invert + reduced sensitivity + XY-to-scroll conversion.
+     * Active when middle-click combo is held.
+     * Transform value 5 = XY_SWAP(1) | Y_INVERT(4) */
     scroll {
         layers = <2>;
-        input-processors = <&zip_xy_transform 1>,
+        input-processors = <&zip_xy_transform 5>,
                            <&zip_xy_scaler 1 4>,
                            <&zip_xy_to_scroll>;
     };
