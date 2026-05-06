@@ -1,0 +1,6 @@
+/ {
+    /omit-if-no-ref/ pointer_accel: pointer_accel {
+        compatible = "zmk,input-processor-acceleration";
+        #input-processor-cells = <0>;
+    };
+};

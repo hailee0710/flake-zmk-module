@@ -1,0 +1,40 @@
+description: ZMK Velocity-Based Pointer Acceleration Input Processor
+
+compatible: "zmk,input-processor-acceleration"
+
+include: ip_zero_param.yaml
+
+properties:
+  input-type:
+    type: int
+    required: true
+    description: Input event type to accelerate (e.g. INPUT_EV_REL for relative events)
+
+  min-factor:
+    type: int
+    default: 1000
+    description: Minimum speed factor (scaled by 1000). <1000 = slower at low speeds.
+
+  max-factor:
+    type: int
+    default: 3500
+    description: Maximum speed factor (scaled by 1000). Reached at speed-max.
+
+  speed-threshold:
+    type: int
+    default: 1000
+    description: Speed (counts/sec) where factor reaches 1.0.
+
+  speed-max:
+    type: int
+    default: 6000
+    description: Speed (counts/sec) where factor reaches max-factor.
+
+  acceleration-exponent:
+    type: int
+    default: 1
+    description: 1=linear, 2=quadratic, 3=cubic curve.
+
+  track-remainders:
+    type: boolean
+    description: Accumulate fractional movements for precision.

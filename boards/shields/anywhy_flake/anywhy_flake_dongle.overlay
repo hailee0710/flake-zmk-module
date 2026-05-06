@@ -7,7 +7,7 @@
 #include "split_inputs.dtsi"
 #include "anywhy_flake.dtsi"
 #include <zephyr/dt-bindings/input/input-event-codes.h>
-#include <behaviors/input_gestures_accel.dtsi>
+#include <behaviors/pointer_accel.dtsi>
 
 / {
     chosen {
@@ -66,7 +66,7 @@
 &pointer_accel {
     input-type = <INPUT_EV_REL>;
     track-remainders;
-    min-factor = <600>;
+    min-factor = <800>;
     max-factor = <2500>;
     speed-threshold = <1200>;
     speed-max = <6000>;
@@ -90,7 +90,7 @@
         layers = <2>;
         input-processors = <&pointer_accel>,
                            <&zip_xy_transform 5>,
-                           <&zip_xy_scaler 1 18>,
+                           <&zip_xy_scaler 1 32>,
                            <&zip_xy_to_scroll>;
     };
 };

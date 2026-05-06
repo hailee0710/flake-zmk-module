@@ -1,0 +1,6 @@
+DT_COMPAT_ZMK_INPUT_PROCESSOR_ACCELERATION := zmk,input-processor-acceleration
+
+config ZMK_INPUT_PROCESSOR_ACCELERATION
+    bool "Pointer Acceleration Input Processor"
+    default y
+    depends on DT_HAS_ZMK_INPUT_PROCESSOR_ACCELERATION_ENABLED
