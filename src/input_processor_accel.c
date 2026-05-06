@@ -1,8 +1,23 @@
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
-#include <zmk/input_processor.h>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <zephyr/input/input.h>
 #include <stdlib.h>
+
+/* Minimal types from drivers/input_processor.h (not available to external modules) */
+#define ZMK_INPUT_PROC_CONTINUE 0
+#define ZMK_INPUT_PROC_STOP 1
+
+struct zmk_input_processor_state {
+    uint8_t input_device_index;
+    int16_t *remainder;
+};
+
+struct zmk_input_processor_driver_api {
+    int (*handle_event)(const struct device *dev, struct input_event *event,
+                        uint32_t param1, uint32_t param2,
+                        struct zmk_input_processor_state *state);
+};
 
 #define DT_DRV_COMPAT zmk_input_processor_acceleration
 
@@ -13,12 +28,8 @@
 #define ACCEL_MAX_CODES 4
 #define SCALE 1000
 
-static int accel_handle_event(const struct device *dev, struct input_event *event,
-                              uint32_t param1, uint32_t param2,
-                              struct zmk_input_processor_state *state);
-
 static const struct zmk_input_processor_driver_api accel_api = {
-    .handle_event = accel_handle_event,
+    .handle_event = NULL,
 };
 
 struct accel_config {
@@ -103,12 +114,12 @@ static int accel_handle_event(const struct device *dev, struct input_event *even
     struct accel_data *data = dev->data;
 
     if (event->type != cfg->input_type) {
-        return 0;
+        return ZMK_INPUT_PROC_CONTINUE;
     }
 
     uint32_t idx = 0;
     if (!code_to_index(cfg, event->code, &idx)) {
-        return 0;
+        return ZMK_INPUT_PROC_CONTINUE;
     }
 
     const int32_t raw = event->value;
@@ -116,7 +127,7 @@ static int accel_handle_event(const struct device *dev, struct input_event *even
 
     if (raw == 0) {
         data->last_time_ms[idx] = now;
-        return 0;
+        return ZMK_INPUT_PROC_CONTINUE;
     }
 
     uint32_t dt_ms = 1;
@@ -148,6 +159,10 @@ static int accel_handle_event(const struct device *dev, struct input_event *even
 
     data->last_phys[idx] = raw;
     data->last_time_ms[idx] = now;
+    return ZMK_INPUT_PROC_CONTINUE;
+}
+
+static int accel_init(const struct device *dev) {
     return 0;
 }
 
@@ -165,13 +180,16 @@ static int accel_handle_event(const struct device *dev, struct input_event *even
         .acceleration_exponent = DT_INST_PROP_OR(inst, acceleration_exponent, 1), \
     };                                                                            \
     static struct accel_data accel_data_##inst = {0};                             \
+    static const struct zmk_input_processor_driver_api accel_api_##inst = {       \
+        .handle_event = accel_handle_event,                                       \
+    };                                                                            \
     DEVICE_DT_INST_DEFINE(inst,                                                   \
-                          NULL,                                                   \
+                          accel_init,                                             \
                           NULL,                                                   \
                           &accel_data_##inst,                                     \
                           &accel_config_##inst,                                   \
                           POST_KERNEL,                                            \
                           CONFIG_ZMK_INPUT_PROCESSOR_INIT_PRIORITY,               \
-                          &accel_api);
+                          &accel_api_##inst);
 
 DT_INST_FOREACH_STATUS_OKAY(ACCEL_INST_INIT)
