@@ -310,13 +310,6 @@
         rst-gpios = MOUSE_PS2_PIN_RST;
 #endif
     };
-
-    mouse_ps2_input_listener: mouse_ps2_input_listener {
-        compatible = "zmk,input-listener";
-        status = "disabled";
-
-        device = <&mouse_ps2>;
-    };
 };
 &uart0 {
     status = "disabled";
@@ -337,20 +330,13 @@
 &mouse_ps2 {
     status = "okay";
 	disable-clicking;
-    tp-sensitivity = <148>;
-    tp-neg-inertia = <10>;
+    tp-sensitivity = <153>;
+    tp-neg-inertia = <6>;
     tp-val6-upper-speed = <255>;
 };
 
-/*
- * IMPORTANT: mouse_ps2_input_listener is DISABLED on the peripheral.
- * On a split keyboard, only the central (dongle) should generate HID reports.
- * The trackpoint events are forwarded to the dongle via &trackpoint_split,
- * and the dongle's &trackpoint_listener generates the actual mouse reports.
- */
-&mouse_ps2_input_listener {
-  status = "disabled";
-};
+/* Trackpoint events are forwarded to the dongle via &trackpoint_split;
+ * the dongle's &trackpoint_listener handles all HID reporting. */
 
 &uart0 {
   status = "okay";
