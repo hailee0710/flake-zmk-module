@@ -7,6 +7,7 @@
 #include "split_inputs.dtsi"
 #include "anywhy_flake.dtsi"
 #include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <behaviors/input_gestures_accel.dtsi>
 
 / {
     chosen {
@@ -57,24 +58,38 @@
     };
 };
 
+/* Pointer acceleration — speed-dependent curve
+ * Config visualizer: https://pointing.streamlit.app/
+ *   min-factor: 0.8x at slow speeds (800/1000) — precision
+ *   max-factor: 2.5x at fast speeds (2500/1000) — speed
+ */
+&pointer_accel {
+    input-type = <INPUT_EV_REL>;
+    track-remainders;
+    min-factor = <600>;
+    max-factor = <2500>;
+    speed-threshold = <1200>;
+    speed-max = <6000>;
+    acceleration-exponent = <2>;
+};
+
 &anywhy_flake_layout {
     kscan = <&mock_kscan>;
 };
 
 &trackpoint_listener {
     status = "okay";
-    /* XY axis swap + 1x sensitivity scaling.
-     * Tune <multiplier divider> to adjust speed:
-     *   <1 1> = normal, <2 1> = 2x, <1 2> = half */
-    input-processors = <&zip_xy_transform 1>,
+    /* Accel → XY swap → 1x scaling */
+    input-processors = <&pointer_accel>,
+                       <&zip_xy_transform 1>,
                        <&zip_xy_scaler 1 1>;
 
-    /* Layer 2 (scroll): XY swap + Y invert + reduced sensitivity + XY-to-scroll conversion.
-     * Active when middle-click combo is held.
-     * Transform value 5 = XY_SWAP(1) | Y_INVERT(4) */
+    /* Layer 2 (scroll): Accel → XY swap + Y invert → 1/32 scale → scroll
+     * Active when middle-click combo is held. */
     scroll {
         layers = <2>;
-        input-processors = <&zip_xy_transform 5>,
+        input-processors = <&pointer_accel>,
+                           <&zip_xy_transform 5>,
                            <&zip_xy_scaler 1 18>,
                            <&zip_xy_to_scroll>;
     };
