@@ -60,17 +60,18 @@
 
 /* Pointer acceleration — speed-dependent curve
  * Config visualizer: https://pointing.streamlit.app/
- *   min-factor: 0.8x at slow speeds (800/1000) — precision
- *   max-factor: 2.5x at fast speeds (2500/1000) — speed
+ *   min-factor: 0.5x at slow speeds (500/1000) — precision
+ *   max-factor: 4.0x at fast speeds (4000/1000) — speed
+ *   exponent 3 = cubic curve (aggressive ramp)
  */
 &pointer_accel {
     input-type = <INPUT_EV_REL>;
     track-remainders;
-    min-factor = <800>;
-    max-factor = <2500>;
-    speed-threshold = <1200>;
+    min-factor = <300>;
+    max-factor = <4000>;
+    speed-threshold = <800>;
     speed-max = <6000>;
-    acceleration-exponent = <2>;
+    acceleration-exponent = <3>;
 };
 
 &anywhy_flake_layout {
