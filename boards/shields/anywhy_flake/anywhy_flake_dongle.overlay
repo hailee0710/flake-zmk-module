@@ -69,9 +69,9 @@
     track-remainders;
     min-factor = <100>;
     max-factor = <4000>;
-    speed-threshold = <500>;
+    speed-threshold = <800>;
     speed-max = <6000>;
-    acceleration-exponent = <3>;
+    acceleration-exponent = <2>;
 };
 
 &anywhy_flake_layout {
@@ -83,7 +83,7 @@
     /* Accel → XY swap → 0.5x scaling */
     input-processors = <&pointer_accel>,
                        <&zip_xy_transform 1>,
-                       <&zip_xy_scaler 1 2>;
+                       <&zip_xy_scaler 1 1>;
 
     /* Layer 2 (scroll): Accel → XY swap + Y invert → 1/32 scale → scroll
      * Active when middle-click combo is held. */

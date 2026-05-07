@@ -330,7 +330,7 @@
 &mouse_ps2 {
     status = "okay";
 	disable-clicking;
-    tp-sensitivity = <153>;
+    tp-sensitivity = <100>;
     tp-neg-inertia = <6>;
     tp-val6-upper-speed = <255>;
 };
