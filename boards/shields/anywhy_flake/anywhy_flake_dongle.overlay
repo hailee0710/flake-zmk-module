@@ -60,7 +60,7 @@
 
 /* Pointer acceleration — speed-dependent curve
  * Config visualizer: https://pointing.streamlit.app/
- *   min-factor: 0.5x at slow speeds (500/1000) — precision
+ *   min-factor: 0.1x at slow speeds (100/1000) — precision
  *   max-factor: 4.0x at fast speeds (4000/1000) — speed
  *   exponent 3 = cubic curve (aggressive ramp)
  */
@@ -80,10 +80,10 @@
 
 &trackpoint_listener {
     status = "okay";
-    /* Accel → XY swap → 1x scaling */
+    /* Accel → XY swap → 0.5x scaling */
     input-processors = <&pointer_accel>,
                        <&zip_xy_transform 1>,
-                       <&zip_xy_scaler 1 1>;
+                       <&zip_xy_scaler 1 2>;
 
     /* Layer 2 (scroll): Accel → XY swap + Y invert → 1/32 scale → scroll
      * Active when middle-click combo is held. */
