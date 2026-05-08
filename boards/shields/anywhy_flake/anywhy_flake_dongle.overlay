@@ -92,7 +92,7 @@
     acceleration-exponent = <2>;
 
     /* Sigmoid curve params */
-    acceleration-factor-base = <500>;    /* 0.5x at low speed */
+    acceleration-factor-base = <300>;    /* 0.5x at low speed */
     acceleration-factor-max  = <4000>;   /* 4.0x at high speed */
     acceleration-factor-rate = <50>;     /* S-curve steepness */
     acceleration-start-offset = <2>;     /* dead zone (raw counts) */
@@ -113,17 +113,13 @@
                        <&zip_xy_transform 1>,
                        <&zip_xy_scaler 1 1>;
 
-    /* Layer 2 (scroll): Accel → XY swap + Y invert → scale → scroll
+    /* Layer 2 (scroll): XY swap + Y invert → flat scale → scroll
      * Active when middle-click combo is held.
-     * Uses the same &pointer_accel sigmoid curve; scroll speed
-     * is tamed by zip_xy_scaler downstream (1/24x).
-     * (To use the accelerator's built-in divisor instead, set
-     *  curve-type = <2> and divisor = <24>.) */
+     * No acceleration — consistent scroll steps at all speeds. */
     scroll {
         layers = <2>;
-        input-processors = <&pointer_accel>,
-                           <&zip_xy_transform 5>,
-                           <&zip_xy_scaler 1 24>,
+        input-processors = <&zip_xy_transform 5>,
+                           <&zip_xy_scaler 1 48>,
                            <&zip_xy_to_scroll>;
     };
 };
