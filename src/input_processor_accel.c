@@ -136,7 +136,6 @@ static uint32_t compute_sigmoid_factor(const struct accel_config *cfg, uint32_t 
     const uint32_t f_max  = clamp_u32(cfg->factor_max, f_min, 20000);
     const uint32_t offset = cfg->start_offset;
     const uint32_t ceil   = (cfg->max_speed > offset) ? cfg->max_speed : (offset + 1);
-    const uint32_t rate   = cfg->factor_rate ? cfg->factor_rate : 1;
 
     /* Dead zone – return base factor */
     if (cps <= offset) {
@@ -166,7 +165,7 @@ static uint32_t compute_sigmoid_factor(const struct accel_config *cfg, uint32_t 
     return clamp_u32((uint32_t)factor, f_min, f_max);
 }
 
-/* ── scroll curve (speed-clamping sigmoid) ────────────────────────── */
+/* ── scroll curve (speed-clamping (linear ramp)) ────────────────────────── */
 
 /*
  * Scroll curve: maps input speed through a sigmoid to produce a
@@ -195,29 +194,24 @@ static uint32_t compute_scroll_factor(const struct accel_config *cfg, uint32_t c
 
     const uint32_t offset = cfg->start_offset;
     const uint32_t ceil   = (cfg->max_speed > offset) ? cfg->max_speed : (offset + 1);
-    const uint32_t rate   = cfg->factor_rate ? cfg->factor_rate : 1;
 
-    /* Below offset: output = 1 (minimum), factor = 1/cps */
+    /* Below offset: hyperbolic falloff (desired = 1) */
     if (cps <= offset) {
         uint32_t factor = SCALE / cps;
         return factor > 0 ? factor : 1;
     }
 
-    /* At/above ceiling: output = max_speed, factor = max_speed/cps */
+    /* At/above ceiling: output capped at max_speed */
     if (cps >= ceil) {
         uint32_t factor = (uint32_t)((uint64_t)ceil * SCALE / cps);
         return factor > 0 ? factor : 1;
     }
 
-    /* Sigmoid maps [offset, ceil] -> [1, ceil] */
-    uint32_t adj      = cps - offset;
-    uint32_t adj_max  = ceil - offset;
-    int64_t  midpoint = (int64_t)adj_max * SCALE / 2;
-    int64_t  t        = (((int64_t)adj * SCALE) - midpoint) / (int64_t)rate;
-    int64_t  sig      = logistic_scaled(t);
-
-    int64_t  span     = (int64_t)(ceil - 1);
-    uint32_t desired  = (uint32_t)(1 + (span * sig) / SCALE);
+    /* Linear ramp of desired output from 1 (at offset) to ceil (at max_speed).
+     * Simpler and more predictable than sigmoid for scroll clamping. */
+    uint32_t range    = ceil - offset;
+    uint32_t progress = cps - offset;
+    uint32_t desired  = 1 + (uint32_t)((uint64_t)(ceil - 1) * progress / range);
 
     /* factor = desired / cps, scaled by SCALE */
     uint32_t factor = (uint32_t)((uint64_t)desired * SCALE / cps);

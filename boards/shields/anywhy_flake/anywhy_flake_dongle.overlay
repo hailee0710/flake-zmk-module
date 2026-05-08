@@ -107,7 +107,7 @@
 };
 
 /* ── Scroll accelerator ──
- * Speed-clamping sigmoid: maps input speed to desired output [1, max_speed],
+ * Speed-clamping (linear ramp): maps input speed to desired output [1, max_speed],
  * then factor = desired / input. Fast deltas get clamped, not amplified.
  * divisor = 10 further tames the result. curve-type = 2 enables the divisor path. */
 pointer_accel_scroll: pointer_accel_scroll {
