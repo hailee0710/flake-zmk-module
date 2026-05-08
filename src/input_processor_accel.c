@@ -28,20 +28,35 @@ struct zmk_input_processor_driver_api {
 #define ACCEL_MAX_CODES 4
 #define SCALE 1000
 
-static const struct zmk_input_processor_driver_api accel_api = {
-    .handle_event = NULL,
-};
+#define CURVE_POLYNOMIAL 0
+#define CURVE_SIGMOID    1
+#define CURVE_SCROLL     2
 
 struct accel_config {
     uint8_t  input_type;
     const uint16_t *codes;
     uint32_t codes_count;
     bool     track_remainders;
+
+    /* ── Legacy polynomial / sigmoid-v1 params ── */
     uint16_t min_factor;
     uint16_t max_factor;
     uint32_t speed_threshold;
     uint32_t speed_max;
     uint8_t  acceleration_exponent;
+    uint8_t  curve_type;
+    uint32_t sigmoid_midpoint;
+    uint32_t sigmoid_steepness;
+
+    /* ── Sigmoid / scroll params ── */
+    uint16_t factor_base;       /* acceleration-factor-base: base multiplier at low speed */
+    uint16_t factor_max;        /* acceleration-factor-max:  ceiling multiplier at high speed */
+    uint32_t factor_rate;       /* acceleration-factor-rate: steepness (higher = gentler S) */
+    uint32_t start_offset;      /* acceleration-start-offset: dead-zone before curve engages */
+    uint32_t max_speed;         /* max-speed: speed at which factor_max is reached (or CPS cap) */
+    bool     interval_speed;    /* enable-interval-based-speed: use fixed-rate CPS instead of dt */
+    uint32_t sending_rate;      /* input-default-sending-rate: PS/2 sample rate in Hz */
+    uint16_t divisor;           /* divisor: output divider (scroll) */
 };
 
 struct accel_data {
@@ -49,6 +64,8 @@ struct accel_data {
     int32_t last_phys[ACCEL_MAX_CODES];
     int16_t remainders[ACCEL_MAX_CODES];
 };
+
+/* ── helpers ───────────────────────────────────────────────────────── */
 
 static inline uint32_t clamp_u32(uint32_t v, uint32_t lo, uint32_t hi) {
     if (v < lo) return lo;
@@ -77,7 +94,94 @@ static uint32_t pow_scaled(uint32_t t, uint8_t exp) {
     return (uint32_t)acc;
 }
 
-static uint32_t compute_factor_scaled(const struct accel_config *cfg, uint32_t cps) {
+/*
+ * Logistic sigmoid approximation (maps (-inf, +inf) → [0, SCALE]):
+ *
+ *   sigmoid(t) ≈ SCALE/2 + (SCALE * t) / (2 * (SCALE + |t|))
+ *
+ * t is already scaled to SCALE-space by the caller.
+ */
+static int64_t logistic_scaled(int64_t t) {
+    /* Clamp t to avoid denominator overflow */
+    int64_t clamp = (int64_t)SCALE * 16;
+    if (t > clamp) t = clamp;
+    if (t < -clamp) t = -clamp;
+
+    int64_t abs_t = (t < 0) ? -t : t;
+    int64_t num   = SCALE * t;
+    int64_t den   = 2 * (SCALE + abs_t);
+    return SCALE / 2 + num / den;
+}
+
+/* ── sigmoid (base / max / rate / offset / max-speed) ─────────────── */
+
+/*
+ * Uses the user-facing parameter model:
+ *
+ *                factor_max  ┤          .-'''''''''''''''''''''''''''''''''''''- 
+ *                            ┤        .'
+ *                            ┤      .'
+ *                            ┤    .'
+ *              factor_base  ┤...'
+ *                            ┤
+ *                            └─────┬────────────┬─────────────────────────→ speed
+ *                             start_offset   max_speed
+ *
+ *   if speed <= start_offset  →  factor = factor_base
+ *   if speed >= max_speed     →  factor = factor_max
+ *   otherwise, the S-curve is shaped by factor_rate (steepness).
+ */
+static uint32_t compute_sigmoid_factor(const struct accel_config *cfg, uint32_t cps) {
+    const uint32_t f_min  = clamp_u32(cfg->factor_base, 100, 20000);
+    const uint32_t f_max  = clamp_u32(cfg->factor_max, f_min, 20000);
+    const uint32_t offset = cfg->start_offset;
+    const uint32_t ceil   = (cfg->max_speed > offset) ? cfg->max_speed : (offset + 1);
+    const uint32_t rate   = cfg->factor_rate ? cfg->factor_rate : 1;
+
+    /* Dead zone – return base factor */
+    if (cps <= offset) {
+        return f_min;
+    }
+
+    /* Cap at ceiling – return max factor directly */
+    if (cps >= ceil) {
+        return f_max;
+    }
+
+    /* x = (adj relative to midpoint) scaled to SCALE, then through
+     * logistic.  By centering the logistic on adj_max/2, adj=0
+     * maps to the left (flat) tail and adj=adj_max maps to the
+     * right (flat) tail of the S, producing a smooth curve with
+     * no discontinuity at the dead-zone boundary. */
+    uint32_t adj      = cps - offset;
+    uint32_t adj_max  = ceil - offset;
+    int64_t  midpoint = (int64_t)adj_max * SCALE / 2;
+    int64_t  t        = (((int64_t)adj * SCALE) - midpoint) / (int64_t)rate;
+    int64_t  sig      = logistic_scaled(t);
+
+    /* Map sigmoid [0, SCALE] → factor [f_min, f_max] */
+    int64_t span   = (int64_t)f_max - (int64_t)f_min;
+    int64_t factor = (int64_t)f_min + (span * sig) / SCALE;
+
+    return clamp_u32((uint32_t)factor, f_min, f_max);
+}
+
+/* ── scroll curve (sigmoid-shaped but applies divisor) ────────────── */
+
+/*
+ * Scroll curve uses the same sigmoid parameter model but includes
+ * an extra integer divisor applied after the acceleration factor.
+ *
+ * This allows fine control: the sigmoid provides acceleration feel,
+ * while the divisor tames overall scroll-wheel sensitivity.
+ */
+static uint32_t compute_scroll_factor(const struct accel_config *cfg, uint32_t cps) {
+    return compute_sigmoid_factor(cfg, cps);
+}
+
+/* ── legacy polynomial (piecewise with exponent) ──────────────────── */
+
+static uint32_t compute_polynomial_factor(const struct accel_config *cfg, uint32_t cps) {
     const uint32_t f_min = clamp_u32(cfg->min_factor, 100, 20000);
     const uint32_t f_max = clamp_u32(cfg->max_factor, f_min, 20000);
     const uint32_t v1 = cfg->speed_threshold;
@@ -102,6 +206,21 @@ static uint32_t compute_factor_scaled(const struct accel_config *cfg, uint32_t c
         return clamp_u32((uint32_t)f, base, f_max);
     }
 }
+
+/* ── dispatcher ───────────────────────────────────────────────────── */
+
+static uint32_t compute_factor_scaled(const struct accel_config *cfg, uint32_t cps) {
+    switch (cfg->curve_type) {
+    case CURVE_SIGMOID:   /* 1 — sigmoid (base/max/rate/offset/max-speed) */
+        return compute_sigmoid_factor(cfg, cps);
+    case CURVE_SCROLL:    /* 2 — scroll (sigmoid + divisor) */
+        return compute_scroll_factor(cfg, cps);
+    default:              /* 0 — polynomial (piecewise + exponent) */
+        return compute_polynomial_factor(cfg, cps);
+    }
+}
+
+/* ── event handler ────────────────────────────────────────────────── */
 
 static int accel_handle_event(const struct device *dev, struct input_event *event,
                               uint32_t param1, uint32_t param2,
@@ -130,31 +249,64 @@ static int accel_handle_event(const struct device *dev, struct input_event *even
         return ZMK_INPUT_PROC_CONTINUE;
     }
 
-    uint32_t dt_ms = 1;
-    if (data->last_time_ms[idx] > 0 && now > data->last_time_ms[idx]) {
-        int64_t diff = now - data->last_time_ms[idx];
-        if (diff > 100) diff = 100;
-        dt_ms = (uint32_t)diff;
+    /* ── speed (CPS) computation ── */
+    uint32_t cps;
+
+    if (cfg->interval_speed) {
+        /*
+         * Interval-based speed: use |raw| directly as the speed
+         * value so that start-offset, max-speed, and factor-rate
+         * are all in the same raw-count unit space.  The
+         * sending-rate is informational only in this mode.
+         *
+         * A trackpoint at 100 Hz reporting raw=5 means the finger
+         * moved 5 counts in one sample period; the curve reacts to
+         * that delta magnitude directly.
+         */
+        cps = (uint32_t)abs(raw);
+    } else {
+        uint32_t dt_ms = 1;
+        if (data->last_time_ms[idx] > 0 && now > data->last_time_ms[idx]) {
+            int64_t diff = now - data->last_time_ms[idx];
+            if (diff > 100) diff = 100;
+            dt_ms = (uint32_t)diff;
+        }
+        cps = (uint32_t)(((uint64_t)abs(raw) * 1000ULL) / dt_ms);
     }
 
-    uint32_t cps = (uint32_t)(( (uint64_t)abs(raw) * 1000ULL ) / dt_ms);
-
+    /* ── factor ── */
     uint32_t factor = compute_factor_scaled(cfg, cps);
 
+    /* Direction reversal damping: if the user suddenly reverses direction
+     * while at high speed, clamp factor to 1.0x to avoid jerk. */
     if ((int64_t)data->last_phys[idx] * (int64_t)raw < 0 && factor > 1000) {
         factor = 1000;
     }
 
+    /* ── apply factor and optional divisor ── */
     if (cfg->track_remainders) {
         int64_t total = (int64_t)raw * (int64_t)factor + (int64_t)data->remainders[idx];
         int32_t out = (int32_t)(total / SCALE);
         int32_t rem = (int32_t)(total - (int64_t)out * SCALE);
+
+        /* Scroll curve: apply integer divisor after acceleration */
+        if (cfg->curve_type == CURVE_SCROLL && cfg->divisor > 1) {
+            out /= cfg->divisor;
+            rem  = 0; /* discard fractional on division */
+        }
+
         if (out > 32767) out = 32767;
         if (out < -32768) out = -32768;
         event->value = out;
         data->remainders[idx] = (int16_t)rem;
     } else {
-        event->value = (int32_t)(((int64_t)raw * (int64_t)factor) / SCALE);
+        int32_t out = (int32_t)(((int64_t)raw * (int64_t)factor) / SCALE);
+
+        if (cfg->curve_type == CURVE_SCROLL && cfg->divisor > 1) {
+            out /= cfg->divisor;
+        }
+
+        event->value = out;
     }
 
     data->last_phys[idx] = raw;
@@ -162,22 +314,39 @@ static int accel_handle_event(const struct device *dev, struct input_event *even
     return ZMK_INPUT_PROC_CONTINUE;
 }
 
+/* ── init ─────────────────────────────────────────────────────────── */
+
 static int accel_init(const struct device *dev) {
     return 0;
 }
 
+/* ── DT instantiation ─────────────────────────────────────────────── */
+
 #define ACCEL_INST_INIT(inst)                                                      \
     static const uint16_t accel_codes_##inst[] = { INPUT_REL_X, INPUT_REL_Y };    \
     static const struct accel_config accel_config_##inst = {                      \
-        .input_type = DT_INST_PROP_OR(inst, input_type, INPUT_EV_REL),            \
-        .codes = accel_codes_##inst,                                              \
-        .codes_count = 2,                                                         \
-        .track_remainders = DT_INST_NODE_HAS_PROP(inst, track_remainders),        \
-        .min_factor = DT_INST_PROP_OR(inst, min_factor, 1000),                    \
-        .max_factor = DT_INST_PROP_OR(inst, max_factor, 3500),                    \
+        .input_type    = DT_INST_PROP_OR(inst, input_type, INPUT_EV_REL),         \
+        .codes         = accel_codes_##inst,                                     \
+        .codes_count   = 2,                                                      \
+        .track_remainders   = DT_INST_NODE_HAS_PROP(inst, track_remainders),     \
+        /* legacy poly / sigmoid-v1 */                                            \
+        .min_factor    = DT_INST_PROP_OR(inst, min_factor, 1000),                 \
+        .max_factor    = DT_INST_PROP_OR(inst, max_factor, 3500),                 \
         .speed_threshold = DT_INST_PROP_OR(inst, speed_threshold, 1000),          \
-        .speed_max = DT_INST_PROP_OR(inst, speed_max, 6000),                      \
-        .acceleration_exponent = DT_INST_PROP_OR(inst, acceleration_exponent, 1), \
+        .speed_max     = DT_INST_PROP_OR(inst, speed_max, 6000),                  \
+        .acceleration_exponent = DT_INST_PROP_OR(inst, acceleration_exponent, 1),\
+        .curve_type    = DT_INST_PROP_OR(inst, curve_type, 0),                    \
+        .sigmoid_midpoint  = DT_INST_PROP_OR(inst, sigmoid_midpoint, 2000),       \
+        .sigmoid_steepness = DT_INST_PROP_OR(inst, sigmoid_steepness, 2000),      \
+        /* sigmoid / scroll */                                             \
+        .factor_base   = DT_INST_PROP_OR(inst, acceleration_factor_base, 1000),   \
+        .factor_max    = DT_INST_PROP_OR(inst, acceleration_factor_max, 1500),    \
+        .factor_rate   = DT_INST_PROP_OR(inst, acceleration_factor_rate, 50),     \
+        .start_offset  = DT_INST_PROP_OR(inst, acceleration_start_offset, 2),     \
+        .max_speed     = DT_INST_PROP_OR(inst, max_speed, 70),                    \
+        .interval_speed = DT_INST_NODE_HAS_PROP(inst, enable_interval_based_speed),\
+        .sending_rate  = DT_INST_PROP_OR(inst, input_default_sending_rate, 100),  \
+        .divisor       = DT_INST_PROP_OR(inst, divisor, 1),                       \
     };                                                                            \
     static struct accel_data accel_data_##inst = {0};                             \
     static const struct zmk_input_processor_driver_api accel_api_##inst = {       \

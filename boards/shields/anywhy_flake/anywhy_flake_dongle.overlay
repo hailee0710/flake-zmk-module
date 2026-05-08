@@ -58,20 +58,48 @@
     };
 };
 
-/* Pointer acceleration — speed-dependent curve
- * Config visualizer: https://pointing.streamlit.app/
- *   min-factor: 0.1x at slow speeds (100/1000) — precision
- *   max-factor: 4.0x at fast speeds (4000/1000) — speed
- *   exponent 3 = cubic curve (aggressive ramp)
+/* ── Pointer acceleration (cursor) — sigmoid S-curve ──
+ *
+ * Shape: flat base at low speed, smooth S-curve ramp, ceiling at high speed.
+ *
+ * All parameters are in raw-count units (|delta| per sample period)
+ * when enable-interval-based-speed is active.
+ *
+ *   factor
+ *   2500 ┤                          .-''''''''''-
+ *        ┤                        .'
+ *        ┤                      .'
+ *        ┤                    .'
+ *   1000 ┤....................'
+ *        └──────┬──────────────────────┬──────→ speed (raw counts)
+ *             2                      70
+ *
+ *   - A raw delta of 1-2 → stays near base factor (1.0x)
+ *   - A raw delta of ~35  → halfway through the S (1.75x)
+ *   - A raw delta of 70+  → max factor (2.5x)
  */
 &pointer_accel {
     input-type = <INPUT_EV_REL>;
     track-remainders;
+
+    curve-type = <1>;                    /* 1 = sigmoid curve */
+
+    /* Legacy polynomial params (unused by sigmoid, kept for reference) */
     min-factor = <100>;
     max-factor = <4000>;
     speed-threshold = <800>;
     speed-max = <6000>;
     acceleration-exponent = <2>;
+
+    /* Sigmoid curve params */
+    acceleration-factor-base = <1000>;   /* 1.0x at low speed */
+    acceleration-factor-max  = <2500>;   /* 2.5x at high speed */
+    acceleration-factor-rate = <50>;     /* S-curve steepness */
+    acceleration-start-offset = <2>;     /* dead zone (raw counts) */
+    max-speed = <70>;                    /* ceiling (raw counts) */
+
+    enable-interval-based-speed;
+    input-default-sending-rate = <100>;  /* PS/2 100 Hz */
 };
 
 &anywhy_flake_layout {
@@ -80,18 +108,22 @@
 
 &trackpoint_listener {
     status = "okay";
-    /* Accel → XY swap → 0.5x scaling */
+    /* Accel → XY swap → passthrough scaler */
     input-processors = <&pointer_accel>,
                        <&zip_xy_transform 1>,
                        <&zip_xy_scaler 1 1>;
 
-    /* Layer 2 (scroll): Accel → XY swap + Y invert → 1/32 scale → scroll
-     * Active when middle-click combo is held. */
+    /* Layer 2 (scroll): Accel → XY swap + Y invert → scale → scroll
+     * Active when middle-click combo is held.
+     * Uses the same &pointer_accel sigmoid curve; scroll speed
+     * is tamed by zip_xy_scaler downstream (1/24x).
+     * (To use the accelerator's built-in divisor instead, set
+     *  curve-type = <2> and divisor = <24>.) */
     scroll {
         layers = <2>;
         input-processors = <&pointer_accel>,
                            <&zip_xy_transform 5>,
-                           <&zip_xy_scaler 1 32>,
+                           <&zip_xy_scaler 1 24>,
                            <&zip_xy_to_scroll>;
     };
 };

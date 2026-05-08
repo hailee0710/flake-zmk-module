@@ -10,6 +10,16 @@ properties:
     required: true
     description: Input event type to accelerate (e.g. INPUT_EV_REL for relative events)
 
+  # ── curve selector ──
+  curve-type:
+    type: int
+    default: 0
+    description: |
+      0 = polynomial (piecewise with exponent, uses min/max-factor)
+      1 = sigmoid (S-curve, uses acceleration-factor-* params)
+      2 = scroll (sigmoid-shaped, with divisor applied)
+
+  # ── legacy polynomial / sigmoid-v1 params ──
   min-factor:
     type: int
     default: 1000
@@ -23,17 +33,90 @@ properties:
   speed-threshold:
     type: int
     default: 1000
-    description: Speed (counts/sec) where factor reaches 1.0.
+    description: Speed (counts/sec) where factor reaches 1.0x (polynomial mode).
 
   speed-max:
     type: int
     default: 6000
-    description: Speed (counts/sec) where factor reaches max-factor.
+    description: Speed (counts/sec) where factor reaches max-factor (polynomial mode).
 
   acceleration-exponent:
     type: int
     default: 1
-    description: 1=linear, 2=quadratic, 3=cubic curve.
+    description: 1=linear, 2=quadratic, 3=cubic curve (polynomial mode).
+
+  sigmoid-midpoint:
+    type: int
+    default: 2000
+    description: (Deprecated) Speed at sigmoid inflection point — unused in current curves.
+
+  sigmoid-steepness:
+    type: int
+    default: 2000
+    description: (Deprecated) Controls sigmoid sharpness — unused in current curves.
+
+  # ── sigmoid / scroll params ──
+  acceleration-factor-base:
+    type: int
+    default: 1000
+    description: |
+      Base multiplier at low speeds (per-1000 scale, 1000 = 1.0x).
+      Used by sigmoid and scroll curves.
+
+  acceleration-factor-max:
+    type: int
+    default: 1500
+    description: |
+      Ceiling multiplier at high speeds (per-1000 scale, 1500 = 1.5x).
+      Used by sigmoid and scroll curves.
+
+  acceleration-factor-rate:
+    type: int
+    default: 50
+    description: |
+      Steepness of the S-curve transition (higher = gentler, lower = sharper).
+      Used by sigmoid and scroll curves.
+
+  acceleration-start-offset:
+    type: int
+    default: 2
+    description: |
+      Dead-zone speed threshold below which no acceleration is applied
+      (factor stays at acceleration-factor-base).
+      Used by sigmoid and scroll curves.
+
+  max-speed:
+    type: int
+    default: 70
+    description: |
+      Speed at which acceleration-factor-max is fully reached.
+      In the same units as acceleration-start-offset (raw counts
+      with interval-based-speed; counts/sec without).
+      Used by sigmoid and scroll curves.
+
+  enable-interval-based-speed:
+    type: boolean
+    description: |
+      Compute speed as |raw| directly (raw delta magnitude per sample)
+      instead of measuring inter-event time.  All curve parameters
+      (start-offset, max-speed, factor-rate) are then in raw-count
+      units, giving consistent feel for fixed-rate devices like
+      PS/2 trackpoints.
+
+  input-default-sending-rate:
+    type: int
+    default: 100
+    description: |
+      PS/2 sample rate in Hz.  Currently informational only;
+      the speed computation uses |raw| directly when
+      enable-interval-based-speed is active.
+
+  divisor:
+    type: int
+    default: 1
+    description: |
+      Integer divisor applied to output after acceleration (scroll curve).
+      Use > 1 to tame scroll-wheel sensitivity.
 
   track-remainders:
     type: boolean
