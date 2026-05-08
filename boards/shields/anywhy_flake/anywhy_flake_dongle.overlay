@@ -66,17 +66,17 @@
  * when enable-interval-based-speed is active.
  *
  *   factor
- *   2500 ┤                          .-''''''''''-
+ *   4000 ┤                          .-''''''''''-
  *        ┤                        .'
  *        ┤                      .'
  *        ┤                    .'
- *   1000 ┤....................'
+ *   500 ┤....................'
  *        └──────┬──────────────────────┬──────→ speed (raw counts)
  *             2                      70
  *
- *   - A raw delta of 1-2 → stays near base factor (1.0x)
- *   - A raw delta of ~35  → halfway through the S (1.75x)
- *   - A raw delta of 70+  → max factor (2.5x)
+ *   - A raw delta of 1-2 → stays near base factor (0.5x)
+ *   - A raw delta of ~35  → halfway through the S (2.25x)
+ *   - A raw delta of 70+  → max factor (4.0x)
  */
 &pointer_accel {
     input-type = <INPUT_EV_REL>;
@@ -92,8 +92,8 @@
     acceleration-exponent = <2>;
 
     /* Sigmoid curve params */
-    acceleration-factor-base = <1000>;   /* 1.0x at low speed */
-    acceleration-factor-max  = <2500>;   /* 2.5x at high speed */
+    acceleration-factor-base = <500>;    /* 0.5x at low speed */
+    acceleration-factor-max  = <4000>;   /* 4.0x at high speed */
     acceleration-factor-rate = <50>;     /* S-curve steepness */
     acceleration-start-offset = <2>;     /* dead zone (raw counts) */
     max-speed = <70>;                    /* ceiling (raw counts) */
