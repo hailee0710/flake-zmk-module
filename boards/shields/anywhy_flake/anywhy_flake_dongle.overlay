@@ -110,20 +110,22 @@
  * Speed-clamping (linear ramp): maps input speed to desired output [1, max_speed],
  * then factor = desired / input. Fast deltas get clamped, not amplified.
  * divisor = 10 further tames the result. curve-type = 2 enables the divisor path. */
-pointer_accel_scroll: pointer_accel_scroll {
-    compatible = "zmk,input-processor-acceleration";
-    status = "okay";
-    #input-processor-cells = <0>;
-    input-type = <INPUT_EV_REL>;
+/ {
+    pointer_accel_scroll: pointer_accel_scroll {
+        compatible = "zmk,input-processor-acceleration";
+        status = "okay";
+        #input-processor-cells = <0>;
+        input-type = <INPUT_EV_REL>;
 
-    curve-type = <2>;                    /* 2 = scroll (speed-clamping sigmoid) */
-    acceleration-factor-rate = <30>;
-    acceleration-start-offset = <15>;
-    max-speed = <70>;
-    divisor = <10>;
+        curve-type = <2>;                    /* 2 = scroll (speed-clamping sigmoid) */
+        acceleration-factor-rate = <30>;
+        acceleration-start-offset = <15>;
+        max-speed = <70>;
+        divisor = <10>;
 
-    enable-interval-based-speed;
-    input-default-sending-rate = <100>;
+        enable-interval-based-speed;
+        input-default-sending-rate = <100>;
+    };
 };
 
 &trackpoint_listener {
