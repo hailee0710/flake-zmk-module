@@ -70,12 +70,12 @@
  *        ┤                        .'
  *        ┤                      .'
  *        ┤                    .'
- *   500 ┤....................'
+ *   300 ┤....................'
  *        └──────┬──────────────────────┬──────→ speed (raw counts)
- *             2                      70
+ *            15                      70
  *
- *   - A raw delta of 1-2 → stays near base factor (0.5x)
- *   - A raw delta of ~35  → halfway through the S (2.25x)
+ *   - A raw delta of 1-15 → stays near base factor (0.3x)
+ *   - A raw delta of ~42  → halfway through the S (2.15x)
  *   - A raw delta of 70+  → max factor (4.0x)
  */
 &pointer_accel {
@@ -92,10 +92,10 @@
     acceleration-exponent = <2>;
 
     /* Sigmoid curve params */
-    acceleration-factor-base = <300>;    /* 0.5x at low speed */
+    acceleration-factor-base = <300>;    /* 0.3x at low speed */
     acceleration-factor-max  = <4000>;   /* 4.0x at high speed */
     acceleration-factor-rate = <50>;     /* S-curve steepness */
-    acceleration-start-offset = <2>;     /* dead zone (raw counts) */
+    acceleration-start-offset = <15>;    /* dead zone (raw counts) */
     max-speed = <70>;                    /* ceiling (raw counts) */
 
     enable-interval-based-speed;
@@ -106,6 +106,26 @@
     kscan = <&mock_kscan>;
 };
 
+/* ── Scroll accelerator ──
+ * Speed-clamping sigmoid: maps input speed to desired output [1, max_speed],
+ * then factor = desired / input. Fast deltas get clamped, not amplified.
+ * divisor = 10 further tames the result. curve-type = 2 enables the divisor path. */
+pointer_accel_scroll: pointer_accel_scroll {
+    compatible = "zmk,input-processor-acceleration";
+    status = "okay";
+    #input-processor-cells = <0>;
+    input-type = <INPUT_EV_REL>;
+
+    curve-type = <2>;                    /* 2 = scroll (speed-clamping sigmoid) */
+    acceleration-factor-rate = <30>;
+    acceleration-start-offset = <15>;
+    max-speed = <70>;
+    divisor = <10>;
+
+    enable-interval-based-speed;
+    input-default-sending-rate = <100>;
+};
+
 &trackpoint_listener {
     status = "okay";
     /* Accel → XY swap → passthrough scaler */
@@ -113,13 +133,13 @@
                        <&zip_xy_transform 1>,
                        <&zip_xy_scaler 1 1>;
 
-    /* Layer 2 (scroll): XY swap + Y invert → flat scale → scroll
+    /* Layer 2 (scroll): Accel → XY swap + Y invert → scroll
      * Active when middle-click combo is held.
-     * No acceleration — consistent scroll steps at all speeds. */
+     * Dedicated scroll accelerator with divisor = 10. */
     scroll {
         layers = <2>;
-        input-processors = <&zip_xy_transform 5>,
-                           <&zip_xy_scaler 1 48>,
+        input-processors = <&pointer_accel_scroll>,
+                           <&zip_xy_transform 5>,
                            <&zip_xy_to_scroll>;
     };
 };

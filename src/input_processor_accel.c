@@ -166,17 +166,62 @@ static uint32_t compute_sigmoid_factor(const struct accel_config *cfg, uint32_t 
     return clamp_u32((uint32_t)factor, f_min, f_max);
 }
 
-/* ── scroll curve (sigmoid-shaped but applies divisor) ────────────── */
+/* ── scroll curve (speed-clamping sigmoid) ────────────────────────── */
 
 /*
- * Scroll curve uses the same sigmoid parameter model but includes
- * an extra integer divisor applied after the acceleration factor.
+ * Scroll curve: maps input speed through a sigmoid to produce a
+ * desired output speed in [1, max_speed], then returns
+ * factor = desired_speed * SCALE / input_speed.
  *
- * This allows fine control: the sigmoid provides acceleration feel,
- * while the divisor tames overall scroll-wheel sensitivity.
+ * This CLAMPS fast movements instead of boosting them -- ideal for
+ * scroll wheels where large deltas should be tamed, not amplified.
+ *
+ *   desired
+ *   max_speed ┤                          .-''''''''''-
+ *             ┤                        .'
+ *             ┤                      .'
+ *             ┤                    .'
+ *           1 ┤....................'
+ *             └──────┬──────────────────────┬──────→ input speed
+ *              start_offset             max_speed
+ *
+ * Then: factor = desired / input  (so factor <= 1.0 in most cases)
+ * The divisor (applied later) further reduces the result.
  */
 static uint32_t compute_scroll_factor(const struct accel_config *cfg, uint32_t cps) {
-    return compute_sigmoid_factor(cfg, cps);
+    if (cps == 0) {
+        return SCALE;
+    }
+
+    const uint32_t offset = cfg->start_offset;
+    const uint32_t ceil   = (cfg->max_speed > offset) ? cfg->max_speed : (offset + 1);
+    const uint32_t rate   = cfg->factor_rate ? cfg->factor_rate : 1;
+
+    /* Below offset: output = 1 (minimum), factor = 1/cps */
+    if (cps <= offset) {
+        uint32_t factor = SCALE / cps;
+        return factor > 0 ? factor : 1;
+    }
+
+    /* At/above ceiling: output = max_speed, factor = max_speed/cps */
+    if (cps >= ceil) {
+        uint32_t factor = (uint32_t)((uint64_t)ceil * SCALE / cps);
+        return factor > 0 ? factor : 1;
+    }
+
+    /* Sigmoid maps [offset, ceil] -> [1, ceil] */
+    uint32_t adj      = cps - offset;
+    uint32_t adj_max  = ceil - offset;
+    int64_t  midpoint = (int64_t)adj_max * SCALE / 2;
+    int64_t  t        = (((int64_t)adj * SCALE) - midpoint) / (int64_t)rate;
+    int64_t  sig      = logistic_scaled(t);
+
+    int64_t  span     = (int64_t)(ceil - 1);
+    uint32_t desired  = (uint32_t)(1 + (span * sig) / SCALE);
+
+    /* factor = desired / cps, scaled by SCALE */
+    uint32_t factor = (uint32_t)((uint64_t)desired * SCALE / cps);
+    return factor > 0 ? factor : 1;
 }
 
 /* ── legacy polynomial (piecewise with exponent) ──────────────────── */
