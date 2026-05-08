@@ -136,6 +136,7 @@ static uint32_t compute_sigmoid_factor(const struct accel_config *cfg, uint32_t 
     const uint32_t f_max  = clamp_u32(cfg->factor_max, f_min, 20000);
     const uint32_t offset = cfg->start_offset;
     const uint32_t ceil   = (cfg->max_speed > offset) ? cfg->max_speed : (offset + 1);
+    const uint32_t rate   = cfg->factor_rate ? cfg->factor_rate : 1;
 
     /* Dead zone – return base factor */
     if (cps <= offset) {
