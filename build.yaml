@@ -18,19 +18,19 @@
 #
 ---
 include:
-  - board: nice_nano_nrf52840_zmk/nrf52840
+  - board: nice_nano//zmk
     shield: anywhy_flake_dongle pacman_adapter
     snippet: studio-rpc-usb-uart
     artifact-name: flake_dongle
-  - board: nice_nano_nrf52840_zmk/nrf52840
+  - board: nice_nano//zmk
     shield: anywhy_flake_dongle pacman_adapter
     snippet: studio-rpc-usb-uart zmk-usb-logging
     artifact-name: flake_dongle_logging
-  - board: nice_nano_nrf52840_zmk/nrf52840
+  - board: nice_nano//zmk
     shield: anywhy_flake_left
     artifact-name: flake_left
-  - board: nice_nano_nrf52840_zmk/nrf52840
+  - board: nice_nano//zmk
     shield: anywhy_flake_right
     artifact-name: flake_right
-  - board: nice_nano_nrf52840_zmk/nrf52840
+  - board: nice_nano//zmk
     shield: settings_reset
