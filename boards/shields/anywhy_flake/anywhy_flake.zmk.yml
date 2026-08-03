@@ -1,6 +1,6 @@
 file_format: "1"
 id: anywhy_flake
-name: Anywhy Flake
+name: Asterisk Flat
 type: shield
 url: https://github.com/anywhy-io/flake
 requires: [pro_micro]

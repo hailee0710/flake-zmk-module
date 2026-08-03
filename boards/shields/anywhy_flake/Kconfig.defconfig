@@ -1,7 +1,7 @@
 if SHIELD_ANYWHY_FLAKE_DONGLE
 
 config ZMK_KEYBOARD_NAME
-	default "Anywhy Flake"
+	default "Asterisk Flat"
 
 config ZMK_SPLIT_ROLE_CENTRAL
 	default y
