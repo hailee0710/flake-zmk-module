@@ -6,8 +6,8 @@ manifest:
       url-base: https://github.com/mctechnology17
     - name: badjeff
       url-base: https://github.com/badjeff
-    - name: englmaxi
-      url-base: https://github.com/englmaxi
+    - name: hailee0710
+      url-base: https://github.com/hailee0710
   projects:
     - name: zmk
       remote: zmkfirmware
@@ -17,8 +17,8 @@ manifest:
     - name: kb_zmk_ps2_mouse_trackpoint_driver
       remote: badjeff
       revision: main
-    - name: zmk-dongle-display
-      remote: englmaxi
-      revision: v0.3
+    - name: zmk-dongle-eyes
+      remote: hailee0710
+      revision: main
   self:
     path: config
