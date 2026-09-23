@@ -19,6 +19,6 @@ manifest:
       revision: main
     - name: zmk-dongle-eyes
       remote: hailee0710
-      revision: main
+      revision: v0.3-lvgl8-framebuffer-port
   self:
     path: config
