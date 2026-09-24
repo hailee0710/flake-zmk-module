@@ -13,7 +13,7 @@ You are an expert in using ZephyrOS and ZMK (https://github.com/zmkfirmware/zmk)
 - Ensure any custom behaviors or sensors comply with Zephyr's driver model and ZMK's event system.
 
 # CI / Build Guidelines
-- The firmware is built using GitHub Actions rather than a local build environment.
+- The firmware builds via GitHub Actions for CI, and can also be built locally using the `zmkfirmware/zmk-build-arm:stable` Docker image (`west init -l config`, `west update`, `west build -s zmk/app -b <board> -- -DSHIELD=<shield> -DZMK_CONFIG=<path>/config`).
 - When creating or modifying configurations, ensure the `build.yaml` file is correctly structured and updated to include all necessary board and shield combinations (e.g., `anywhy_flake_left`, `anywhy_flake_right`, `settings_reset`).
 - Be aware that the project uses a custom `config/west.yml` workspace configuration. Always ensure external modules and ZMK dependencies are accurately tracked in this file.
 
@@ -31,7 +31,7 @@ You are an expert in using ZephyrOS and ZMK (https://github.com/zmkfirmware/zmk)
 - Ensure that any refactored code maintains compatibility with existing keyboard layouts and workflows.
 
 ## 3. Build System Awareness
-- Always assume that the firmware is built using the CI/CD pipeline defined in ``build.yaml``.
-- When making changes that might affect the build process, verify that the CI matrix in ``build.yaml`` includes the new configurations.
+- The CI/CD pipeline defined in ``build.yaml`` is the source of truth for board/shield combinations; use it to derive local Docker build commands too.
+- When making changes that might affect the build process, verify that the CI matrix in ``build.yaml`` includes the new configurations, and test locally via Docker when possible.
 - Be aware of the custom ``config/west.yml`` workspace configuration that defines the ZMK fork and external modules.
 - When generating build artifacts, ensure the ``artifact-name`` is specified in ``build.yaml`` for clear identification.

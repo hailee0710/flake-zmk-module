@@ -1,0 +1,9 @@
+firmware/
+build/
+.west/
+zmk/
+zmk-dongle-eyes/
+kb_zmk_ps2_mouse_trackpoint_driver/
+modules/
+zephyr/*
+!zephyr/module.yml
